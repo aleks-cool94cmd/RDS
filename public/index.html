@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#ffd8e7" />
+    <meta name="theme-color" content="#f7bfd4" />
     <link rel="manifest" href="./manifest.json" />
     <link rel="icon" href="./assets/icons/icon-192.svg" />
     <link rel="stylesheet" href="./css/styles.css" />
@@ -11,46 +11,94 @@
   </head>
   <body>
     <main class="app" id="calendarWrap">
-      <header>
-        <h1 id="appTitle"></h1>
-        <p id="appSubtitle"></p>
-        <p id="prediction" class="muted"></p>
+      <header class="hero">
+        <div>
+          <h1 id="appTitle"></h1>
+          <p id="appSubtitle"></p>
+          <p id="prediction" class="muted"></p>
+        </div>
+        <div class="ring-wrap">
+          <div id="cycleRing" class="cycle-ring" aria-label="Прогресс цикла">
+            <div>
+              <strong id="ringMain">0</strong>
+              <small id="ringSub">день</small>
+            </div>
+          </div>
+        </div>
       </header>
+
+      <section class="quick-grid">
+        <article class="quick-card"><span>🩸</span><strong id="periodCountdown">—</strong><small>До менструации</small></article>
+        <article class="quick-card"><span>✨</span><strong id="ovulationCountdown">—</strong><small>До овуляции</small></article>
+        <article class="quick-card"><span>🔒</span><strong>Локально</strong><small>Ваши данные только у вас</small></article>
+      </section>
 
       <section class="calendar-controls">
         <button id="prevMonth" aria-label="Предыдущий месяц">←</button>
         <strong id="monthLabel"></strong>
-        <button id="nextMonth" aria-label="Следующий месяц">→</button>
+        <div class="inline-actions">
+          <button id="todayBtn" aria-label="Перейти к сегодня">Сегодня</button>
+          <button id="nextMonth" aria-label="Следующий месяц">→</button>
+        </div>
       </section>
 
       <section id="calendarGrid" class="calendar-grid" aria-label="Календарь"></section>
+
       <section id="phaseCard" class="phase-card"></section>
+
+      <section id="companionCard" class="companion-card">
+        <h3>Сопровождение дня</h3>
+        <p id="companionText"></p>
+        <div class="companion-actions">
+          <button id="comfortBtn" class="alt" type="button">Подбодрить меня</button>
+          <button id="routineBtn" class="alt" type="button">Ритуал на сегодня</button>
+        </div>
+      </section>
 
       <section id="delayPanel" class="delay-panel" hidden>
         <h3></h3>
         <p class="delay-text"></p>
         <p class="delay-reasons"></p>
-        <div class="actions">
+        <div class="actions one-col">
           <button id="markStart">Отметить начало</button>
           <button id="remindLater" class="alt">Напомнить позже</button>
           <button id="exportData" class="alt">Экспортировать данные</button>
         </div>
       </section>
 
-      <form id="dayForm" class="sheet">
-        <h3>Данные дня: <span id="selectedDateLabel"></span></h3>
-        <input id="intensity" placeholder="Интенсивность (0-10)" />
-        <select id="mood"></select>
-        <input id="symptoms" placeholder="Симптомы через запятую" />
-        <textarea id="note" placeholder="Заметка"></textarea>
+      <section class="history-card">
+        <h3>История циклов</h3>
+        <ul id="cyclesHistory"></ul>
+      </section>
+
+      <section class="toolbar">
+        <button id="openSheet" type="button">Заполнить день</button>
+        <button id="enableNotifications" type="button" class="alt">Уведомления</button>
+      </section>
+    </main>
+
+    <section class="sheet" id="daySheet" hidden>
+      <form id="dayForm" class="sheet-form">
+        <div class="sheet-header">
+          <h3>Данные дня: <span id="selectedDateLabel"></span></h3>
+          <button id="closeSheet" type="button" class="alt">✕</button>
+        </div>
+
+        <label>Начало менструации<input id="periodStart" type="date" /></label>
+        <label>Конец менструации<input id="periodEnd" type="date" /></label>
+        <label>Интенсивность (0-10)<input id="intensity" type="number" min="0" max="10" /></label>
+        <label>Настроение<select id="mood"></select></label>
+        <label>Симптомы (через запятую)<input id="symptoms" placeholder="Боль, усталость" /></label>
+        <label>Заметка<textarea id="note" placeholder="Как вы себя чувствуете?"></textarea></label>
+
         <div class="actions">
           <button type="submit">Сохранить</button>
-          <button id="enableNotifications" type="button" class="alt">Включить уведомления</button>
           <label id="importLabel" for="importFile">Импорт JSON</label>
           <input id="importFile" type="file" accept="application/json" />
+          <button id="deleteData" type="button" class="danger">Удалить данные</button>
         </div>
       </form>
-    </main>
+    </section>
 
     <script src="./i18n/ru.js"></script>
     <script src="./js/app.js"></script>

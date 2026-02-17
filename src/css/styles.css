@@ -1,97 +1,81 @@
 :root {
-  --bg: #fff8fb;
-  --card: #ffffffcc;
-  --text: #352637;
+  --text: #4b2042;
+  --card: #fff;
+  --bg: #ffe1ec;
 }
 * { box-sizing: border-box; }
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   color: var(--text);
-  background: radial-gradient(circle at top, #ffe7f0, #f9fbff 55%, #fff9f1);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(180deg, #ffd7e7, #fff4f7);
   min-height: 100vh;
-  transition: background 0.5s ease;
 }
-body[data-phase='menstrual'] { background: linear-gradient(180deg, #f7d6e3, #fdf6f9); }
-body[data-phase='follicular'] { background: linear-gradient(180deg, #d9ecff, #f3f9ff); }
-body[data-phase='ovulation'] { background: linear-gradient(180deg, #fff0bd, #fff9e4); }
-body[data-phase='luteal'] { background: linear-gradient(180deg, #ffe2d2, #fff5ef); }
+body[data-phase='menstrual'] { background: linear-gradient(180deg, #f7ccd8, #fff3f6); }
+body[data-phase='follicular'] { background: linear-gradient(180deg, #d9efff, #f6fbff); }
+body[data-phase='ovulation'] { background: linear-gradient(180deg, #ffedbb, #fff9ea); }
+body[data-phase='luteal'] { background: linear-gradient(180deg, #ffd9c8, #fff4ee); }
 
-.app { max-width: 460px; margin: 0 auto; padding: 16px; }
-header h1 { margin: 0; font-size: 1.5rem; }
-header p { margin: 4px 0 0; font-size: 0.92rem; }
-.muted { opacity: .8; }
+.app { max-width: 430px; margin: 0 auto; padding: 12px 12px 90px; }
+.hero { display: grid; grid-template-columns: 1fr 120px; gap: 8px; background: #ffffffb3; padding: 12px; border-radius: 20px; }
+h1 { margin: 0; font-size: 1.35rem; }
+.muted { opacity: .75; font-size: .87rem; }
 
-.calendar-controls { display: flex; justify-content: space-between; align-items: center; margin: 14px 0; }
-.calendar-controls button,
-.day-cell,
-.actions button,
-#enableNotifications,
-#exportData,
-#importLabel { min-height: 44px; min-width: 44px; }
-
-.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
-.day-cell {
-  border: none; border-radius: 14px; background: #fff; font-weight: 600;
-  box-shadow: 0 3px 10px #00000012;
+.cycle-ring {
+  width: 110px; height: 110px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: conic-gradient(#ec4f93 var(--ring-progress, 20%), #f3d9e6 0);
+  position: relative;
 }
-.day-cell.is-today { outline: 2px solid #4a3ff0; }
-.day-cell.is-selected { transform: scale(1.05); }
-.day-cell.is-outside { opacity: 0.45; }
-.day-cell.has-note::after { content: '•'; color: #4a3ff0; margin-left: 2px; }
+.cycle-ring::after { content: ''; position: absolute; inset: 10px; border-radius: 50%; background: #fff6fa; }
+.cycle-ring > div { position: relative; z-index: 1; text-align: center; }
 
-.phase-card {
-  display: flex; gap: 12px; align-items: center;
-  border-radius: 18px; padding: 14px; margin-top: 16px;
-  background: var(--card); box-shadow: 0 6px 24px #00000012;
-  animation: fadeIn .35s ease;
-}
-.phase-icon { font-size: 2rem; }
-.phase-menstrual { border-left: 4px solid #9f2f5e; }
-.phase-follicular { border-left: 4px solid #4da2ff; }
-.phase-ovulation { border-left: 4px solid #efc443; }
-.phase-luteal { border-left: 4px solid #ffad7a; }
+.quick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+.quick-card { background: #fff; border-radius: 16px; padding: 9px; text-align: center; box-shadow: 0 4px 12px #00000010; }
+.quick-card span { display: block; font-size: 1.2rem; }
+.quick-card strong { display: block; font-size: .95rem; }
+.quick-card small { font-size: .7rem; opacity: .7; }
 
-.phase-menstrual::before,
-.phase-follicular::before,
-.phase-ovulation::before,
-.phase-luteal::before {
-  content: ''; position: absolute; width: 90px; height: 90px; border-radius: 999px; opacity: 0.18; pointer-events: none;
-}
+.calendar-controls { display: flex; justify-content: space-between; align-items: center; margin: 12px 0; }
+.inline-actions { display: flex; gap: 6px; }
+
+button, #importLabel, .day-cell { min-height: 44px; min-width: 44px; border: 0; border-radius: 12px; }
+button { background: #6e2e74; color: #fff; padding: 10px; }
+button.alt, #importLabel { background: #f0ebf6; color: #392442; }
+button.danger { background: #b63857; }
+
+.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.day-cell { background: #fff; font-weight: 700; box-shadow: 0 2px 8px #00000010; }
+.day-cell.is-selected { outline: 2px solid #6a4cf5; }
+.day-cell.is-today { border: 2px dashed #ec4f93; }
+.day-cell.is-outside { opacity: .35; }
+.day-cell.has-note::after { content: '•'; color: #6a4cf5; margin-left: 2px; }
+.day-cell.period { background: #f8adc7; }
+.day-cell.ovulation { background: #bee9ff; }
+
+.phase-card, .companion-card, .history-card, .delay-panel { background: #fff; border-radius: 18px; padding: 12px; margin-top: 10px; position: relative; overflow: hidden; }
+.phase-card { display: flex; gap: 10px; align-items: center; }
+.phase-icon { font-size: 1.9rem; }
+
+.phase-menstrual::before, .phase-follicular::before, .phase-ovulation::before, .phase-luteal::before { content: ''; position: absolute; width: 92px; height: 92px; right: -20px; top: -20px; border-radius: 50%; opacity: .23; }
 .phase-menstrual::before { background: #9f2f5e; animation: wave 4s ease-in-out infinite; }
-.phase-follicular::before { background: #4da2ff; animation: particles 2.8s linear infinite; }
-.phase-ovulation::before { background: #efc443; animation: pulse 1.8s ease-in-out infinite; }
-.phase-luteal::before { background: #ffad7a; animation: fadeSlow 3.5s ease-in-out infinite; }
+.phase-follicular::before { background: #4da2ff; animation: particles 3s linear infinite; }
+.phase-ovulation::before { background: #efc443; animation: pulse 1.6s ease-in-out infinite; }
+.phase-luteal::before { background: #ffad7a; animation: fadeSlow 3.3s ease-in-out infinite; }
 
-.sheet {
-  margin-top: 12px;
-  background: #fff;
-  border-radius: 16px;
-  padding: 12px;
-  box-shadow: 0 6px 20px #00000014;
-}
-.sheet input, .sheet textarea, .sheet select {
-  width: 100%; margin-bottom: 8px; border-radius: 10px; border: 1px solid #ddd; padding: 10px;
-}
+.toolbar { position: fixed; left: 50%; transform: translateX(-50%); bottom: 10px; width: min(430px, calc(100vw - 20px)); display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+.sheet { position: fixed; inset: 0; background: #00000055; display: grid; align-items: end; }
+.sheet[hidden] { display: none; }
+.sheet-form { background: #fff; border-radius: 20px 20px 0 0; padding: 12px; max-height: 83vh; overflow: auto; }
+.sheet-form label { display: block; font-size: .85rem; margin-bottom: 8px; }
+.sheet-form input, .sheet-form textarea, .sheet-form select { width: 100%; margin-top: 4px; border: 1px solid #ddd; border-radius: 10px; padding: 10px; }
+.sheet-header { display: flex; justify-content: space-between; align-items: center; }
 .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-button { border: 0; border-radius: 12px; padding: 10px; background: #2f2f43; color: #fff; }
-button.alt { background: #ececf5; color: #333; }
-
-.delay-panel {
-  margin: 14px 0;
-  border-radius: 16px;
-  padding: 14px;
-  background: #fff2f5;
-  border: 1px solid #ffc3d4;
-}
-.delay-panel .actions { grid-template-columns: 1fr; }
-
-.import-wrap { display: inline-block; position: relative; }
+.one-col { grid-template-columns: 1fr; }
 #importFile { display: none; }
-#importLabel { display: inline-flex; align-items: center; justify-content: center; background: #ececf5; color: #333; border-radius: 12px; padding: 10px; }
 
-@keyframes wave { 0%,100%{transform:translateX(0)}50%{transform:translateX(12px)} }
-@keyframes particles { 0%{transform:translateY(0)}50%{transform:translateY(-8px)}100%{transform:translateY(0)} }
-@keyframes pulse { 0%,100%{transform:scale(.9)}50%{transform:scale(1.08)} }
-@keyframes fadeSlow { 0%,100%{opacity:.1}50%{opacity:.3} }
-@keyframes fadeIn { from {opacity:0; transform: translateY(4px);} to {opacity:1; transform: translateY(0);} }
+@keyframes wave { 0%,100%{transform:translateX(0)}50%{transform:translateX(8px)} }
+@keyframes particles { 0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)} }
+@keyframes pulse { 0%,100%{transform:scale(.9)}50%{transform:scale(1.1)} }
+@keyframes fadeSlow { 0%,100%{opacity:.15}50%{opacity:.3} }

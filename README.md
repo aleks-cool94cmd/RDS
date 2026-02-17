@@ -1,6 +1,6 @@
 # menstrual-cycle-tracker
 
-Мобильное PWA-приложение для отслеживания цикла: фазы, прогноз, задержка, заметки, экспорт/импорт данных, локальные уведомления и пример web-push сервера.
+Эмоциональный mobile-first PWA трекер цикла: календарь фаз, прогнозы, задержка, ежедневное сопровождение и поддержка в сложные дни.
 
 ## 1) Как запустить локально
 ```bash
@@ -11,7 +11,7 @@ npm run start
 
 ## 2) Как создать GitHub repo
 1. Создайте пустой репозиторий на GitHub (например `menstrual-cycle-tracker`).
-2. Скопируйте в него все файлы этого проекта.
+2. Скопируйте все файлы проекта в репозиторий.
 
 ## 3) Как сделать push
 ```bash
@@ -24,26 +24,21 @@ git push -u origin main
 ```
 
 ## 4) Где появится сайт
-После push в `main` сработает GitHub Actions workflow `.github/workflows/deploy.yml`.
-Сайт будет опубликован в GitHub Pages:
+После push в `main` workflow `.github/workflows/deploy.yml` опубликует `public/` в GitHub Pages:
 `https://<username>.github.io/<repo>/`
 
 ## 5) Как включить уведомления
-1. Откройте приложение.
-2. Нажмите кнопку **«Включить уведомления»**.
-3. Разрешите уведомления в браузере.
-
-> В приложении реализованы локальные уведомления (Notification API) и регистрация service worker.
+1. Нажмите **«Уведомления»**.
+2. Разрешите уведомления в браузере.
 
 ## 6) Как запустить push сервер
-1. Создайте VAPID-ключи (например через пакет `web-push`).
-2. Создайте `.env`:
+1. Создайте `.env`:
 ```env
 VAPID_PUBLIC_KEY=your_public_key
 VAPID_PRIVATE_KEY=your_private_key
 PORT=3030
 ```
-3. Запуск:
+2. Запуск:
 ```bash
 npm run push-server
 ```
@@ -56,15 +51,7 @@ npm run push-server
 ## 7) Пример JSON структуры данных
 ```json
 {
-  "cycles": [
-    {
-      "id": "c1",
-      "startDate": "2026-01-01",
-      "endDate": "2026-01-05",
-      "length": 28,
-      "confirmed": true
-    }
-  ],
+  "cycles": [{ "id": "c1", "startDate": "2026-01-01", "endDate": "2026-01-05", "length": 28, "confirmed": true }],
   "days": {
     "2026-01-10": {
       "phase": "follicular",
@@ -74,11 +61,7 @@ npm run push-server
       "note": "Лёгкая активность"
     }
   },
-  "settings": {
-    "theme": "auto",
-    "notifications": true,
-    "delayThreshold": 3
-  }
+  "settings": { "theme": "auto", "notifications": true, "delayThreshold": 3 }
 }
 ```
 

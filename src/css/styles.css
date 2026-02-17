@@ -1,0 +1,97 @@
+:root {
+  --bg: #fff8fb;
+  --card: #ffffffcc;
+  --text: #352637;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text);
+  background: radial-gradient(circle at top, #ffe7f0, #f9fbff 55%, #fff9f1);
+  min-height: 100vh;
+  transition: background 0.5s ease;
+}
+body[data-phase='menstrual'] { background: linear-gradient(180deg, #f7d6e3, #fdf6f9); }
+body[data-phase='follicular'] { background: linear-gradient(180deg, #d9ecff, #f3f9ff); }
+body[data-phase='ovulation'] { background: linear-gradient(180deg, #fff0bd, #fff9e4); }
+body[data-phase='luteal'] { background: linear-gradient(180deg, #ffe2d2, #fff5ef); }
+
+.app { max-width: 460px; margin: 0 auto; padding: 16px; }
+header h1 { margin: 0; font-size: 1.5rem; }
+header p { margin: 4px 0 0; font-size: 0.92rem; }
+.muted { opacity: .8; }
+
+.calendar-controls { display: flex; justify-content: space-between; align-items: center; margin: 14px 0; }
+.calendar-controls button,
+.day-cell,
+.actions button,
+#enableNotifications,
+#exportData,
+#importLabel { min-height: 44px; min-width: 44px; }
+
+.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+.day-cell {
+  border: none; border-radius: 14px; background: #fff; font-weight: 600;
+  box-shadow: 0 3px 10px #00000012;
+}
+.day-cell.is-today { outline: 2px solid #4a3ff0; }
+.day-cell.is-selected { transform: scale(1.05); }
+.day-cell.is-outside { opacity: 0.45; }
+.day-cell.has-note::after { content: '•'; color: #4a3ff0; margin-left: 2px; }
+
+.phase-card {
+  display: flex; gap: 12px; align-items: center;
+  border-radius: 18px; padding: 14px; margin-top: 16px;
+  background: var(--card); box-shadow: 0 6px 24px #00000012;
+  animation: fadeIn .35s ease;
+}
+.phase-icon { font-size: 2rem; }
+.phase-menstrual { border-left: 4px solid #9f2f5e; }
+.phase-follicular { border-left: 4px solid #4da2ff; }
+.phase-ovulation { border-left: 4px solid #efc443; }
+.phase-luteal { border-left: 4px solid #ffad7a; }
+
+.phase-menstrual::before,
+.phase-follicular::before,
+.phase-ovulation::before,
+.phase-luteal::before {
+  content: ''; position: absolute; width: 90px; height: 90px; border-radius: 999px; opacity: 0.18; pointer-events: none;
+}
+.phase-menstrual::before { background: #9f2f5e; animation: wave 4s ease-in-out infinite; }
+.phase-follicular::before { background: #4da2ff; animation: particles 2.8s linear infinite; }
+.phase-ovulation::before { background: #efc443; animation: pulse 1.8s ease-in-out infinite; }
+.phase-luteal::before { background: #ffad7a; animation: fadeSlow 3.5s ease-in-out infinite; }
+
+.sheet {
+  margin-top: 12px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 0 6px 20px #00000014;
+}
+.sheet input, .sheet textarea, .sheet select {
+  width: 100%; margin-bottom: 8px; border-radius: 10px; border: 1px solid #ddd; padding: 10px;
+}
+.actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+button { border: 0; border-radius: 12px; padding: 10px; background: #2f2f43; color: #fff; }
+button.alt { background: #ececf5; color: #333; }
+
+.delay-panel {
+  margin: 14px 0;
+  border-radius: 16px;
+  padding: 14px;
+  background: #fff2f5;
+  border: 1px solid #ffc3d4;
+}
+.delay-panel .actions { grid-template-columns: 1fr; }
+
+.import-wrap { display: inline-block; position: relative; }
+#importFile { display: none; }
+#importLabel { display: inline-flex; align-items: center; justify-content: center; background: #ececf5; color: #333; border-radius: 12px; padding: 10px; }
+
+@keyframes wave { 0%,100%{transform:translateX(0)}50%{transform:translateX(12px)} }
+@keyframes particles { 0%{transform:translateY(0)}50%{transform:translateY(-8px)}100%{transform:translateY(0)} }
+@keyframes pulse { 0%,100%{transform:scale(.9)}50%{transform:scale(1.08)} }
+@keyframes fadeSlow { 0%,100%{opacity:.1}50%{opacity:.3} }
+@keyframes fadeIn { from {opacity:0; transform: translateY(4px);} to {opacity:1; transform: translateY(0);} }

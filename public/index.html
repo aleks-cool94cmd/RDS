@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#ffd8e7" />
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="icon" href="./assets/icons/icon-192.svg" />
+    <link rel="stylesheet" href="./css/styles.css" />
+    <title>CycleFlow</title>
+  </head>
+  <body>
+    <main class="app" id="calendarWrap">
+      <header>
+        <h1 id="appTitle"></h1>
+        <p id="appSubtitle"></p>
+        <p id="prediction" class="muted"></p>
+      </header>
+
+      <section class="calendar-controls">
+        <button id="prevMonth" aria-label="Предыдущий месяц">←</button>
+        <strong id="monthLabel"></strong>
+        <button id="nextMonth" aria-label="Следующий месяц">→</button>
+      </section>
+
+      <section id="calendarGrid" class="calendar-grid" aria-label="Календарь"></section>
+      <section id="phaseCard" class="phase-card"></section>
+
+      <section id="delayPanel" class="delay-panel" hidden>
+        <h3></h3>
+        <p class="delay-text"></p>
+        <p class="delay-reasons"></p>
+        <div class="actions">
+          <button id="markStart">Отметить начало</button>
+          <button id="remindLater" class="alt">Напомнить позже</button>
+          <button id="exportData" class="alt">Экспортировать данные</button>
+        </div>
+      </section>
+
+      <form id="dayForm" class="sheet">
+        <h3>Данные дня: <span id="selectedDateLabel"></span></h3>
+        <input id="intensity" placeholder="Интенсивность (0-10)" />
+        <select id="mood"></select>
+        <input id="symptoms" placeholder="Симптомы через запятую" />
+        <textarea id="note" placeholder="Заметка"></textarea>
+        <div class="actions">
+          <button type="submit">Сохранить</button>
+          <button id="enableNotifications" type="button" class="alt">Включить уведомления</button>
+          <label id="importLabel" for="importFile">Импорт JSON</label>
+          <input id="importFile" type="file" accept="application/json" />
+        </div>
+      </form>
+    </main>
+
+    <script src="./i18n/ru.js"></script>
+    <script src="./js/app.js"></script>
+  </body>
+</html>

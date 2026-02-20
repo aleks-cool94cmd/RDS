@@ -389,51 +389,64 @@ button:active { transform: translateY(0) scale(.96); filter: brightness(.97); }
 #appSubtitle, #prediction { color: #5d6778; font-size: 13px; }
 
 .ring {
-  --ring-size: 78px;
+  --ring-size: 112px;
   width: var(--ring-size);
   height: var(--ring-size);
-  border-radius: 14px;
-  background: linear-gradient(135deg,#d692ea,#a988ff);
+  border-radius: 50%;
+  background: transparent;
   display: grid;
   place-items: center;
   box-shadow: 0 8px 20px rgba(181,120,220,0.18);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   isolation: isolate;
 }
 .ring-halo {
   position: absolute;
-  inset: 0;
-  border-radius: 14px;
-  filter: blur(10px) saturate(130%);
-  opacity: .5;
+  inset: -10px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(178,106,255,.45) 0%, rgba(126,116,255,.22) 38%, transparent 72%);
+  filter: blur(18px) saturate(145%);
+  opacity: .72;
   z-index: 0;
 }
-.ring-spark {
-  position: absolute;
-  width: 7px;
-  height: 7px;
-  top: 14px;
-  right: 14px;
-  border-radius: 50%;
-  background: radial-gradient(circle,#fff 0%, rgba(255,255,255,.25) 45%, transparent 70%);
-  box-shadow: 0 0 12px rgba(255,255,255,.55);
-  z-index: 4;
-}
+.ring-spark { display: none; }
 .ring::before {
   content: '';
   position: absolute;
-  inset: 8px;
+  inset: 0;
   border-radius: 50%;
-  background: conic-gradient(from -90deg, var(--ring-accent, #8f8bff) var(--ring-progress, 25%), rgba(255,255,255,.18) 0);
+  background:
+    conic-gradient(from -90deg,
+      #ff86cf 0%,
+      #ffbd7f 20%,
+      #b98aff 55%,
+      #83beff 82%,
+      #ff86cf var(--ring-progress, 0%),
+      rgba(255,255,255,.2) var(--ring-progress, 0%) 100%);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 16px), #000 calc(100% - 15px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 16px), #000 calc(100% - 15px));
+  filter: drop-shadow(0 0 14px rgba(216,138,255,.58));
+  z-index: 2;
+}
+.ring::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from -90deg, rgba(255,255,255,.46) 0deg, transparent 70deg, transparent 290deg, rgba(255,255,255,.34) 360deg);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 16px), #000 calc(100% - 15px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 16px), #000 calc(100% - 15px));
+  opacity: .35;
   z-index: 1;
 }
+
 .ring-center {
   position: absolute;
   inset: 18px;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 28%, rgba(255,255,255,0.06), rgba(255,255,255,0.01));
-  box-shadow: inset 0 2px 8px rgba(255,255,255,.06), 0 8px 18px rgba(2,4,12,.35);
+  background: radial-gradient(circle at 35% 28%, rgba(255,255,255,.08), rgba(255,255,255,.02) 42%, rgba(8,12,30,.92) 100%);
+  box-shadow: inset 0 2px 10px rgba(255,255,255,.08), 0 10px 24px rgba(2,4,18,.52);
   z-index: 2;
 }
 .ring strong,
@@ -445,35 +458,27 @@ button:active { transform: translateY(0) scale(.96); filter: brightness(.97); }
   text-align: center;
 }
 .ring strong {
-  top: 50%;
-  transform: translate(-50%, -56%);
-  width: 42px;
+  top: 34%;
+  transform: translateX(-50%);
+  width: 64px;
   line-height: 1;
-  font-size: 26px;
+  font-size: 54px;
   font-weight: 800;
   font-family: 'Manrope', 'Inter', sans-serif;
-  color: #233255;
-  text-shadow: 0 2px 10px rgba(255,255,255,.35), 0 4px 10px rgba(17,26,48,.28);
+  color: #ffffff;
+  text-shadow: 0 10px 24px rgba(0,0,0,.5);
 }
 .ring .ring-label {
-  bottom: 9px;
-  width: 54px;
-  font-size: 8px;
+  top: 74%;
+  width: 80px;
+  font-size: 10px;
   opacity: .92;
-  font-weight: 700;
-  color: #31446f;
-  text-transform: uppercase;
+  font-weight: 600;
+  color: rgba(235,241,255,.95);
+  text-transform: lowercase;
   line-height: 1.08;
   letter-spacing: .25px;
 }
-.ring.phase-menstrual { --ring-accent: #ff7ab6; }
-.ring.phase-follicular { --ring-accent: #ffab78; }
-.ring.phase-ovulation { --ring-accent: #ffc86c; }
-.ring.phase-luteal { --ring-accent: #8f8bff; }
-.ring.phase-menstrual .ring-halo { background: radial-gradient(circle at 18% 18%, rgba(255,120,182,.42), rgba(255,120,182,.10) 44%, transparent 72%); }
-.ring.phase-follicular .ring-halo { background: radial-gradient(circle at 18% 18%, rgba(255,167,120,.38), rgba(255,167,120,.08) 44%, transparent 72%); }
-.ring.phase-ovulation .ring-halo { background: radial-gradient(circle at 18% 18%, rgba(255,202,108,.42), rgba(255,202,108,.10) 44%, transparent 72%); }
-.ring.phase-luteal .ring-halo { background: radial-gradient(circle at 18% 18%, rgba(143,139,255,.38), rgba(143,139,255,.08) 44%, transparent 72%); }
 .ring-pulse { animation: ringPulse .55s ease; }
 @keyframes ringPulse {
   0% { transform: scale(1); }
@@ -638,15 +643,13 @@ button:active { transform: translateY(0) scale(.96); filter: brightness(.97); }
 :root.dark .day-cell.phase-luteal { background: linear-gradient(180deg, rgba(255, 165, 130, .25), rgba(255, 165, 130, .14)); }
 :root.dark .day-cell.is-selected { border: 2px solid rgba(147,197,253,.55); }
 :root.dark .nav-item.active { color: #fff; }
-:root.dark .ring { background: linear-gradient(135deg,#9d78d8,#7e63d3); }
-:root.dark .ring-center { background: radial-gradient(circle at 30% 28%, rgba(255,255,255,0.04), rgba(255,255,255,0.01)); box-shadow: inset 0 1px 6px rgba(255,255,255,.08), 0 8px 18px rgba(0,0,0,.45); }
-:root.dark .ring::before { background: conic-gradient(from -90deg, var(--ring-accent, #8f7bff) var(--ring-progress, 25%), rgba(255,255,255,.16) 0); }
-:root.dark .ring strong, :root.dark .ring small { color: #1f2f53; }
-:root.dark .ring .ring-label { color: #2d3f67; }
+:root.dark .ring-halo { opacity: .78; }
+:root.dark .ring-center { background: radial-gradient(circle at 35% 28%, rgba(255,255,255,.07), rgba(255,255,255,.01) 42%, rgba(6,10,26,.94) 100%); }
+:root.dark .ring strong, :root.dark .ring .ring-label { color: #f2f6ff; }
 
 @media (max-width:380px) {
   .day-cell { height: 40px; }
-  .ring { --ring-size: 72px; }
-  .ring strong { width: 38px; font-size: 24px; }
-  .ring .ring-label { width: 50px; font-size: 7px; bottom: 8px; }
+  .ring { --ring-size: 92px; }
+  .ring strong { width: 54px; font-size: 42px; }
+  .ring .ring-label { width: 72px; font-size: 10px; top: 68%; }
 }

@@ -205,9 +205,12 @@
   }
 
   function ensureDay(dateStr) {
+    const computedPhase = phaseForDate(dateStr);
     if (!state.data.days[dateStr]) {
-      state.data.days[dateStr] = { phase: phaseForDate(dateStr), intensity: '', symptoms: [], mood: '', note: '' };
+      state.data.days[dateStr] = { phase: computedPhase, intensity: '', symptoms: [], mood: '', note: '' };
+      return state.data.days[dateStr];
     }
+    state.data.days[dateStr].phase = computedPhase;
     return state.data.days[dateStr];
   }
 

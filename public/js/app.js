@@ -58,6 +58,11 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state.data));
   }
 
+  function setAppVisibility(show) {
+    document.getElementById('appRoot').hidden = !show;
+    document.getElementById('mainTabbar').hidden = !show;
+  }
+
   function parseDate(v) { return new Date(`${v}T00:00:00`); }
   function formatDate(d) { return d.toISOString().slice(0, 10); }
   function shiftBy(v, days) { const d = parseDate(v); d.setDate(d.getDate() + days); return formatDate(d); }
@@ -417,6 +422,7 @@
     }];
 
     document.getElementById('onboarding').hidden = true;
+    setAppVisibility(true);
     state.selectedDate = todayStr();
     renderMain();
   }
@@ -473,8 +479,11 @@
   bindEvents();
   renderTabs();
   if (!state.data.profile.onboardingCompleted) {
+    setAppVisibility(false);
     document.getElementById('onboarding').hidden = false;
     renderQuestion();
+  } else {
+    setAppVisibility(true);
   }
   renderMain();
 

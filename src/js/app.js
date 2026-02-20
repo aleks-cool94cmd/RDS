@@ -63,6 +63,48 @@
     document.getElementById('mainTabbar').hidden = !show;
   }
 
+  function applyTheme(isDark) {
+    const toggle = document.getElementById('colorToggle');
+    document.documentElement.classList.toggle('dark', isDark);
+    if (toggle) {
+      toggle.textContent = isDark ? '☀️ Светлый режим' : '🌙 Тёмный режим';
+      toggle.setAttribute('aria-pressed', String(isDark));
+    }
+    localStorage.setItem('cycleflow_theme', isDark ? 'dark' : 'light');
+  }
+
+  function initTheme() {
+    const saved = localStorage.getItem('cycleflow_theme');
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(saved ? saved === 'dark' : prefersDark);
+  }
+
+  function triggerOnboardingHeartPulse() {
+    const heart = document.getElementById('headerHeart');
+    if (!heart) return;
+    heart.classList.add('pulse');
+    setTimeout(() => heart.classList.remove('pulse'), 300);
+  }
+
+  function setOnboardingProgress() {
+    const circle = document.getElementById('progressCircle');
+    const percent = document.getElementById('progressPercent');
+    const card = document.getElementById('card');
+    if (!circle || !percent) return;
+
+    const total = t.onboarding.questions.length;
+    const progressStep = state.onboardingStep + 1;
+    const ratio = (progressStep - 1) / (total - 1 || 1);
+    const pct = Math.round(ratio * 100);
+    const r = 44;
+    const circumference = 2 * Math.PI * r;
+
+    circle.style.strokeDasharray = circumference.toFixed(2);
+    circle.style.strokeDashoffset = (circumference * (1 - ratio)).toFixed(2);
+    percent.textContent = `${pct}%`;
+    if (card) requestAnimationFrame(() => card.classList.add('show'));
+  }
+
   function parseDate(v) { return new Date(`${v}T00:00:00`); }
   function formatDate(d) { return d.toISOString().slice(0, 10); }
   function shiftBy(v, days) { const d = parseDate(v); d.setDate(d.getDate() + days); return formatDate(d); }
@@ -353,6 +395,7 @@
     const body = document.getElementById('questionBody');
     document.getElementById('questionStep').textContent = `${state.onboardingStep + 1}/${list.length}.`;
     document.getElementById('questionTitle').textContent = q.title;
+    setOnboardingProgress();
 
     if (q.type === 'select') {
       body.innerHTML = `<select id="onboardingInput">${q.options.map((x) => `<option value="${x}">${x}</option>`).join('')}</select>`;
@@ -388,6 +431,7 @@
     if (state.onboardingStep < t.onboarding.questions.length - 1) {
       state.onboardingStep += 1;
       renderQuestion();
+      triggerOnboardingHeartPulse();
       return;
     }
     completeOnboarding();
@@ -471,10 +515,15 @@
     document.getElementById('prevQuestion').addEventListener('click', () => {
       if (state.onboardingStep > 0) state.onboardingStep -= 1;
       renderQuestion();
+      triggerOnboardingHeartPulse();
     });
 
     document.getElementById('nextQuestion').addEventListener('click', nextQuestion);
+    const themeToggle = document.getElementById('colorToggle');
+    if (themeToggle) themeToggle.addEventListener('click', () => applyTheme(!document.documentElement.classList.contains('dark')));
   }
+
+  initTheme();
 
   if (!state.data.profile.onboardingCompleted) {
     setAppVisibility(false);

@@ -11,19 +11,45 @@
   </head>
   <body>
     <section id="onboarding" class="onboarding" hidden>
-      <div class="onboarding-card glass">
-        <div class="welcome-anim">💗</div>
-        <h1>Добро пожаловать в CycleFlow</h1>
-        <p id="onboardingHint">Нежно настроим приложение под вас за 1 минуту.</p>
-        <form id="onboardingForm">
-          <div id="questionStep" class="step"></div>
-          <h3 id="questionTitle"></h3>
-          <div id="questionBody"></div>
-          <div class="actions">
-            <button type="button" id="prevQuestion" class="ghost">Назад</button>
-            <button type="button" id="nextQuestion">Далее</button>
+      <div class="onboarding-shell">
+        <div class="toggle-row">
+          <button class="toggle" id="colorToggle" aria-pressed="false">🌙 Тёмный режим</button>
+        </div>
+        <div class="onboarding-card glass" id="card">
+          <div class="header-row">
+            <div class="heart-badge" id="headerHeart" aria-hidden="true">❤</div>
+            <div>
+              <h1>Добро пожаловать в CycleFlow</h1>
+              <p id="onboardingHint">Нежно настроим приложение под вас за 1 минуту.</p>
+            </div>
           </div>
-        </form>
+
+          <div class="onboarding-grid">
+            <div class="circular-wrap">
+              <svg class="progress-svg" viewBox="0 0 100 100" aria-hidden="true">
+                <defs>
+                  <linearGradient id="onboardingGrad" x1="0%" x2="100%"><stop offset="0%" stop-color="#ff7ab6"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient>
+                </defs>
+                <circle class="progress-bg" cx="50" cy="50" r="44"></circle>
+                <circle class="progress-fg" id="progressCircle" cx="50" cy="50" r="44"></circle>
+              </svg>
+              <div class="progress-center">
+                <div class="progress-percent" id="progressPercent">0%</div>
+                <div class="progress-heart">💗</div>
+              </div>
+            </div>
+
+            <form id="onboardingForm">
+              <div id="questionStep" class="step"></div>
+              <h3 id="questionTitle"></h3>
+              <div id="questionBody"></div>
+              <div class="actions">
+                <button type="button" id="prevQuestion" class="ghost">Назад</button>
+                <button type="button" id="nextQuestion">Далее</button>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
     </section>
 

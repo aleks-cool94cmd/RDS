@@ -1,9 +1,21 @@
 /* global I18N_RU */
 (() => {
-  const STORAGE_KEY = 'cycle-tracker-v3';
+  const STORAGE_KEY = 'cycle-tracker-v4';
   const DAY = 24 * 60 * 60 * 1000;
   const t = I18N_RU;
   const todayStr = () => new Date().toISOString().slice(0, 10);
+
+  // Правила на основе средних значений женского цикла:
+  // цикл обычно 21–35 дней, среднее 28; длительность менструации 3–8 дней, среднее 5.
+  const CYCLE_RULES = {
+    MIN_CYCLE_LENGTH: 21,
+    MAX_CYCLE_LENGTH: 35,
+    DEFAULT_CYCLE_LENGTH: 28,
+    MIN_PERIOD_LENGTH: 3,
+    MAX_PERIOD_LENGTH: 8,
+    DEFAULT_PERIOD_LENGTH: 5,
+    OVULATION_OFFSET: 14
+  };
 
   const state = {
     selectedDate: todayStr(),
@@ -14,13 +26,28 @@
     data: loadData()
   };
 
+  function clamp(value, min, max, fallback) {
+    const n = Number(value);
+    if (Number.isNaN(n)) return fallback;
+    return Math.min(max, Math.max(min, n));
+  }
+
   function loadData() {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) return JSON.parse(stored);
     return {
       cycles: [],
       days: {},
-      settings: { theme: 'auto', notifications: false, delayThreshold: 3 },
+      settings: {
+        theme: 'auto',
+        notifications: false,
+        delayThreshold: 3,
+        rules: {
+          avgCycleLength: CYCLE_RULES.DEFAULT_CYCLE_LENGTH,
+          avgPeriodLength: CYCLE_RULES.DEFAULT_PERIOD_LENGTH,
+          allowedCycleRange: [CYCLE_RULES.MIN_CYCLE_LENGTH, CYCLE_RULES.MAX_CYCLE_LENGTH]
+        }
+      },
       profile: { name: '', email: '', flowType: '', goal: '', onboardingCompleted: false },
       pushSubscription: null,
       remindLaterUntil: null
@@ -36,17 +63,23 @@
   function shiftBy(v, days) { const d = parseDate(v); d.setDate(d.getDate() + days); return formatDate(d); }
   function daysDiff(from, to) { return Math.ceil((parseDate(to) - parseDate(from)) / DAY); }
 
+  function getPeriodLength() {
+    const period = state.data.settings?.rules?.avgPeriodLength || state.onboardingAnswers.periodLength;
+    return clamp(period, CYCLE_RULES.MIN_PERIOD_LENGTH, CYCLE_RULES.MAX_PERIOD_LENGTH, CYCLE_RULES.DEFAULT_PERIOD_LENGTH);
+  }
+
   function getCycleLength() {
     const last = state.data.cycles.slice(-3);
-    if (!last.length) return Number(state.onboardingAnswers.cycleLength || 28);
-    return Math.round(last.reduce((acc, c) => acc + c.length, 0) / last.length);
+    if (!last.length) return CYCLE_RULES.DEFAULT_CYCLE_LENGTH;
+    const avg = Math.round(last.reduce((acc, c) => acc + clamp(c.length, CYCLE_RULES.MIN_CYCLE_LENGTH, CYCLE_RULES.MAX_CYCLE_LENGTH, CYCLE_RULES.DEFAULT_CYCLE_LENGTH), 0) / last.length);
+    return clamp(avg, CYCLE_RULES.MIN_CYCLE_LENGTH, CYCLE_RULES.MAX_CYCLE_LENGTH, CYCLE_RULES.DEFAULT_CYCLE_LENGTH);
   }
 
   function getPrediction() {
     const last = state.data.cycles[state.data.cycles.length - 1];
     if (!last) return null;
     const cycleLength = getCycleLength();
-    const ovulationDay = cycleLength - 14;
+    const ovulationDay = cycleLength - CYCLE_RULES.OVULATION_OFFSET;
     const predictedNextPeriod = shiftBy(last.startDate, cycleLength);
     const ovulationDate = shiftBy(last.startDate, ovulationDay);
     const cycleDayRaw = Math.floor((parseDate(state.selectedDate) - parseDate(last.startDate)) / DAY) + 1;
@@ -66,7 +99,7 @@
     const base = state.data.cycles[state.data.cycles.length - 1].startDate;
     const daysFrom = Math.floor((parseDate(dateStr) - parseDate(base)) / DAY);
     const cycleDay = ((daysFrom % prediction.cycleLength) + prediction.cycleLength) % prediction.cycleLength;
-    if (cycleDay < Number(state.onboardingAnswers.periodLength || 5)) return 'menstrual';
+    if (cycleDay < getPeriodLength()) return 'menstrual';
     if (cycleDay < prediction.cycleLength - 16) return 'follicular';
     if (cycleDay <= prediction.cycleLength - 12) return 'ovulation';
     return 'luteal';
@@ -193,7 +226,7 @@
     const day = ensureDay(state.selectedDate);
     const pStart = document.getElementById('periodStart').value;
     const pEnd = document.getElementById('periodEnd').value;
-    day.intensity = document.getElementById('intensity').value;
+    day.intensity = clamp(document.getElementById('intensity').value, 0, 10, 0);
     day.mood = document.getElementById('mood').value;
     day.symptoms = document.getElementById('symptoms').value.split(',').map((x) => x.trim()).filter(Boolean);
     day.note = document.getElementById('note').value;
@@ -201,7 +234,9 @@
 
     if (pStart && pEnd) {
       const prev = state.data.cycles[state.data.cycles.length - 1];
-      const length = prev ? Math.max(20, Math.round((parseDate(pStart) - parseDate(prev.startDate)) / DAY)) : Number(state.onboardingAnswers.cycleLength || 28);
+      const fallbackCycle = state.data.settings.rules.avgCycleLength || CYCLE_RULES.DEFAULT_CYCLE_LENGTH;
+      const rawLength = prev ? Math.round((parseDate(pStart) - parseDate(prev.startDate)) / DAY) : fallbackCycle;
+      const length = clamp(rawLength, CYCLE_RULES.MIN_CYCLE_LENGTH, CYCLE_RULES.MAX_CYCLE_LENGTH, CYCLE_RULES.DEFAULT_CYCLE_LENGTH);
       state.data.cycles.push({ id: crypto.randomUUID(), startDate: pStart, endDate: pEnd, length, confirmed: true });
     }
 
@@ -211,9 +246,10 @@
 
   function markStart() {
     const start = todayStr();
-    const end = shiftBy(start, Number(state.onboardingAnswers.periodLength || 4));
+    const end = shiftBy(start, getPeriodLength() - 1);
     const prev = state.data.cycles[state.data.cycles.length - 1];
-    const length = prev ? Math.max(20, Math.round((parseDate(start) - parseDate(prev.startDate)) / DAY)) : Number(state.onboardingAnswers.cycleLength || 28);
+    const rawLength = prev ? Math.round((parseDate(start) - parseDate(prev.startDate)) / DAY) : getCycleLength();
+    const length = clamp(rawLength, CYCLE_RULES.MIN_CYCLE_LENGTH, CYCLE_RULES.MAX_CYCLE_LENGTH, CYCLE_RULES.DEFAULT_CYCLE_LENGTH);
     state.data.cycles.push({ id: crypto.randomUUID(), startDate: start, endDate: end, length, confirmed: true });
     state.data.remindLaterUntil = null;
     renderMain();
@@ -255,28 +291,51 @@
     saveData();
   }
 
+  function dateInputTemplate() {
+    return `
+      <label class="date-field">
+        <input id="onboardingInput" type="date" class="pretty-date" />
+        <span class="calendar-icon" aria-hidden="true">📅</span>
+      </label>
+      <small class="date-help">Формат: ДД.ММ.ГГГГ</small>
+    `;
+  }
+
   function renderQuestion() {
     const list = t.onboarding.questions;
     const q = list[state.onboardingStep];
     const body = document.getElementById('questionBody');
     document.getElementById('questionTitle').textContent = `${state.onboardingStep + 1}/${list.length}. ${q.title}`;
-    let html = '';
+
     if (q.type === 'select') {
-      html = `<select id="onboardingInput">${q.options.map((x) => `<option value="${x}">${x}</option>`).join('')}</select>`;
+      body.innerHTML = `<select id="onboardingInput">${q.options.map((x) => `<option value="${x}">${x}</option>`).join('')}</select>`;
+    } else if (q.type === 'date') {
+      body.innerHTML = dateInputTemplate();
     } else {
-      html = `<input id="onboardingInput" type="${q.type}" placeholder="${q.placeholder || ''}" ${q.min ? `min="${q.min}"` : ''} ${q.max ? `max="${q.max}"` : ''} />`;
+      body.innerHTML = `<input id="onboardingInput" type="${q.type}" placeholder="${q.placeholder || ''}" ${q.min ? `min="${q.min}"` : ''} ${q.max ? `max="${q.max}"` : ''} />`;
     }
-    body.innerHTML = html;
+
     const current = state.onboardingAnswers[q.key];
     if (current) document.getElementById('onboardingInput').value = current;
     document.getElementById('prevQuestion').style.visibility = state.onboardingStep === 0 ? 'hidden' : 'visible';
     document.getElementById('nextQuestion').textContent = state.onboardingStep === list.length - 1 ? 'Завершить' : 'Далее';
   }
 
+  function normalizeAnswer(q, value) {
+    if (q.key === 'cycleLength') {
+      return String(clamp(value, CYCLE_RULES.MIN_CYCLE_LENGTH, CYCLE_RULES.MAX_CYCLE_LENGTH, CYCLE_RULES.DEFAULT_CYCLE_LENGTH));
+    }
+    if (q.key === 'periodLength') {
+      return String(clamp(value, CYCLE_RULES.MIN_PERIOD_LENGTH, CYCLE_RULES.MAX_PERIOD_LENGTH, CYCLE_RULES.DEFAULT_PERIOD_LENGTH));
+    }
+    return value;
+  }
+
   function nextQuestion() {
     const q = t.onboarding.questions[state.onboardingStep];
-    const value = document.getElementById('onboardingInput').value.trim();
-    if (!value) return;
+    const raw = document.getElementById('onboardingInput').value.trim();
+    if (!raw) return;
+    const value = normalizeAnswer(q, raw);
     state.onboardingAnswers[q.key] = value;
     if (state.onboardingStep < t.onboarding.questions.length - 1) {
       state.onboardingStep += 1;
@@ -288,6 +347,10 @@
 
   function completeOnboarding() {
     const a = state.onboardingAnswers;
+    const cycleLength = clamp(a.cycleLength, CYCLE_RULES.MIN_CYCLE_LENGTH, CYCLE_RULES.MAX_CYCLE_LENGTH, CYCLE_RULES.DEFAULT_CYCLE_LENGTH);
+    const periodLength = clamp(a.periodLength, CYCLE_RULES.MIN_PERIOD_LENGTH, CYCLE_RULES.MAX_PERIOD_LENGTH, CYCLE_RULES.DEFAULT_PERIOD_LENGTH);
+    const startDate = a.lastStartDate || todayStr();
+
     state.data.profile = {
       name: a.name,
       email: a.email,
@@ -295,9 +358,13 @@
       goal: a.goal,
       onboardingCompleted: true
     };
-    const cycleLength = Number(a.cycleLength || 28);
-    const startDate = a.lastStartDate || todayStr();
-    const periodLength = Number(a.periodLength || 5);
+
+    state.data.settings.rules = {
+      avgCycleLength: cycleLength,
+      avgPeriodLength: periodLength,
+      allowedCycleRange: [CYCLE_RULES.MIN_CYCLE_LENGTH, CYCLE_RULES.MAX_CYCLE_LENGTH]
+    };
+
     state.data.cycles = [{
       id: crypto.randomUUID(),
       startDate,
@@ -305,6 +372,7 @@
       length: cycleLength,
       confirmed: true
     }];
+
     document.getElementById('onboarding').hidden = true;
     state.selectedDate = todayStr();
     renderMain();
@@ -338,6 +406,7 @@
       day.note = `${day.note ? `${day.note}\n` : ''}${t.labels.hardDay}`;
       renderMain();
     });
+
     document.getElementById('routineBtn').addEventListener('click', () => {
       document.getElementById('companionText').textContent = t.labels.rituals[Math.floor(Math.random() * t.labels.rituals.length)];
     });
@@ -355,6 +424,7 @@
       if (state.onboardingStep > 0) state.onboardingStep -= 1;
       renderQuestion();
     });
+
     document.getElementById('nextQuestion').addEventListener('click', nextQuestion);
   }
 

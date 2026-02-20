@@ -65,7 +65,7 @@
       <section id="tab-care" class="tab-content">
         <section class="card">
           <h3>Дневник самочувствия</h3>
-          <button id="openSheet">Заполнить за сегодня</button>
+          <div class="actions col"><button id="openSheet">Заполнить за сегодня</button><label id="importLabel" for="importFile" class="ghost">Импорт JSON</label><input id="importFile" type="file" accept="application/json" /></div>
           <ul id="cyclesHistory"></ul>
         </section>
       </section>
@@ -76,9 +76,7 @@
           <p id="emailPreview"></p>
           <div class="actions col">
             <button id="enableNotifications">Включить уведомления</button>
-            <label id="importLabel" for="importFile" class="ghost">Импорт JSON</label>
-            <input id="importFile" type="file" accept="application/json" />
-            <button id="deleteData" class="danger-btn">Удалить данные с устройства</button>
+                        <button id="deleteData" class="danger-btn">Удалить данные с устройства</button>
           </div>
         </section>
       </section>

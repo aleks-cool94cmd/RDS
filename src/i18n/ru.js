@@ -30,8 +30,8 @@ window.I18N_RU = {
       { key: 'name', title: 'Как к вам обращаться?', type: 'text', placeholder: 'Ваше имя' },
       { key: 'email', title: 'Введите почту для уведомлений', type: 'email', placeholder: 'you@example.com' },
       { key: 'lastStartDate', title: 'Когда началась последняя менструация?', type: 'date' },
-      { key: 'cycleLength', title: 'Средняя длина цикла (дней)', type: 'number', min: 20, max: 40 },
-      { key: 'periodLength', title: 'Сколько обычно длится менструация?', type: 'number', min: 2, max: 10 },
+      { key: 'cycleLength', title: 'Средняя длина цикла (21–35 дней)', type: 'number', min: 21, max: 35 },
+      { key: 'periodLength', title: 'Сколько обычно длится менструация? (3–8 дней)', type: 'number', min: 3, max: 8 },
       { key: 'flowType', title: 'Как обычно проходит цикл?', type: 'select', options: ['Легко', 'С перепадами', 'Часто сложно'] },
       { key: 'goal', title: 'Что для вас сейчас важнее?', type: 'select', options: ['Точный прогноз', 'Поддержка и настроение', 'Планирование и здоровье'] }
     ]

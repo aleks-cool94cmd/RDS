@@ -97,6 +97,13 @@ button { border: 0; border-radius: 14px; padding: 12px; min-height: 44px; }
   background: #edf2fbcc; border: 1px solid #d7e1f5;
 }
 .pretty-date { padding-right: 50px !important; border: 1px solid #cfd8ea !important; background: linear-gradient(180deg, #ffffff, #f8fbff); }
+.pretty-date::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  pointer-events: none;
+}
+.pretty-date::-webkit-clear-button,
+.pretty-date::-webkit-inner-spin-button { display: none; }
+
 .date-help { color: var(--muted); font-size: .78rem; display: block; margin-top: 6px; }
 
 .glass-date-picker {

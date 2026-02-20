@@ -3,102 +3,106 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#f7bfd4" />
+    <meta name="theme-color" content="#f4f6fb" />
     <link rel="manifest" href="./manifest.json" />
     <link rel="icon" href="./assets/icons/icon-192.svg" />
     <link rel="stylesheet" href="./css/styles.css" />
     <title>CycleFlow</title>
   </head>
   <body>
-    <main class="app" id="calendarWrap">
-      <header class="hero">
+    <section id="onboarding" class="onboarding" hidden>
+      <div class="onboarding-card glass">
+        <div class="welcome-anim">💗</div>
+        <h1>Добро пожаловать в CycleFlow</h1>
+        <p id="onboardingHint">Нежно настроим приложение под вас за 1 минуту.</p>
+        <form id="onboardingForm">
+          <h3 id="questionTitle"></h3>
+          <div id="questionBody"></div>
+          <div class="actions">
+            <button type="button" id="prevQuestion" class="ghost">Назад</button>
+            <button type="button" id="nextQuestion">Далее</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <main class="app" id="appRoot">
+      <header class="apple-header glass">
         <div>
-          <h1 id="appTitle"></h1>
+          <h2 id="appTitle"></h2>
           <p id="appSubtitle"></p>
           <p id="prediction" class="muted"></p>
         </div>
-        <div class="ring-wrap">
-          <div id="cycleRing" class="cycle-ring" aria-label="Прогресс цикла">
-            <div>
-              <strong id="ringMain">0</strong>
-              <small id="ringSub">день</small>
-            </div>
-          </div>
-        </div>
+        <div class="ring" id="cycleRing"><strong id="ringMain">1</strong><small id="ringSub">день</small></div>
       </header>
 
-      <section class="quick-grid">
-        <article class="quick-card"><span>🩸</span><strong id="periodCountdown">—</strong><small>До менструации</small></article>
-        <article class="quick-card"><span>✨</span><strong id="ovulationCountdown">—</strong><small>До овуляции</small></article>
-        <article class="quick-card"><span>🔒</span><strong>Локально</strong><small>Ваши данные только у вас</small></article>
-      </section>
-
-      <section class="calendar-controls">
-        <button id="prevMonth" aria-label="Предыдущий месяц">←</button>
-        <strong id="monthLabel"></strong>
-        <div class="inline-actions">
-          <button id="todayBtn" aria-label="Перейти к сегодня">Сегодня</button>
+      <section id="tab-calendar" class="tab-content active">
+        <section class="calendar-controls">
+          <button id="prevMonth" aria-label="Предыдущий месяц">←</button>
+          <strong id="monthLabel"></strong>
           <button id="nextMonth" aria-label="Следующий месяц">→</button>
-        </div>
+        </section>
+        <section id="calendarGrid" class="calendar-grid" aria-label="Календарь"></section>
+        <section id="phaseCard" class="card"></section>
+        <section id="delayPanel" class="card danger" hidden>
+          <h3></h3><p class="delay-text"></p><p class="delay-reasons"></p>
+          <div class="actions col"><button id="markStart">Отметить начало</button><button id="remindLater" class="ghost">Напомнить позже</button><button id="exportData" class="ghost">Экспортировать данные</button></div>
+        </section>
       </section>
 
-      <section id="calendarGrid" class="calendar-grid" aria-label="Календарь"></section>
-
-      <section id="phaseCard" class="phase-card"></section>
-
-      <section id="companionCard" class="companion-card">
-        <h3>Сопровождение дня</h3>
-        <p id="companionText"></p>
-        <div class="companion-actions">
-          <button id="comfortBtn" class="alt" type="button">Подбодрить меня</button>
-          <button id="routineBtn" class="alt" type="button">Ритуал на сегодня</button>
-        </div>
+      <section id="tab-insights" class="tab-content">
+        <section class="quick-grid">
+          <article class="card"><span>🩸</span><strong id="periodCountdown">—</strong><small>До менструации</small></article>
+          <article class="card"><span>✨</span><strong id="ovulationCountdown">—</strong><small>До овуляции</small></article>
+          <article class="card"><span>🌸</span><strong id="selectedDateLabel">—</strong><small>Выбранный день</small></article>
+        </section>
+        <section id="companionCard" class="card">
+          <h3>Поддержка дня</h3><p id="companionText"></p>
+          <div class="actions"><button id="comfortBtn" class="ghost">Подбодрить меня</button><button id="routineBtn" class="ghost">Ритуал на сегодня</button></div>
+        </section>
       </section>
 
-      <section id="delayPanel" class="delay-panel" hidden>
-        <h3></h3>
-        <p class="delay-text"></p>
-        <p class="delay-reasons"></p>
-        <div class="actions one-col">
-          <button id="markStart">Отметить начало</button>
-          <button id="remindLater" class="alt">Напомнить позже</button>
-          <button id="exportData" class="alt">Экспортировать данные</button>
-        </div>
+      <section id="tab-care" class="tab-content">
+        <section class="card">
+          <h3>Дневник самочувствия</h3>
+          <button id="openSheet">Заполнить за сегодня</button>
+          <ul id="cyclesHistory"></ul>
+        </section>
       </section>
 
-      <section class="history-card">
-        <h3>История циклов</h3>
-        <ul id="cyclesHistory"></ul>
-      </section>
-
-      <section class="toolbar">
-        <button id="openSheet" type="button">Заполнить день</button>
-        <button id="enableNotifications" type="button" class="alt">Уведомления</button>
+      <section id="tab-settings" class="tab-content">
+        <section class="card">
+          <h3>Уведомления и приватность</h3>
+          <p id="emailPreview"></p>
+          <div class="actions col">
+            <button id="enableNotifications">Включить уведомления</button>
+            <label id="importLabel" for="importFile" class="ghost">Импорт JSON</label>
+            <input id="importFile" type="file" accept="application/json" />
+            <button id="deleteData" class="danger-btn">Удалить данные с устройства</button>
+          </div>
+        </section>
       </section>
     </main>
 
     <section class="sheet" id="daySheet" hidden>
-      <form id="dayForm" class="sheet-form">
-        <div class="sheet-header">
-          <h3>Данные дня: <span id="selectedDateLabel"></span></h3>
-          <button id="closeSheet" type="button" class="alt">✕</button>
-        </div>
-
+      <form id="dayForm" class="sheet-form glass">
+        <div class="sheet-header"><h3>Данные дня</h3><button id="closeSheet" type="button" class="ghost">✕</button></div>
         <label>Начало менструации<input id="periodStart" type="date" /></label>
         <label>Конец менструации<input id="periodEnd" type="date" /></label>
         <label>Интенсивность (0-10)<input id="intensity" type="number" min="0" max="10" /></label>
         <label>Настроение<select id="mood"></select></label>
         <label>Симптомы (через запятую)<input id="symptoms" placeholder="Боль, усталость" /></label>
-        <label>Заметка<textarea id="note" placeholder="Как вы себя чувствуете?"></textarea></label>
-
-        <div class="actions">
-          <button type="submit">Сохранить</button>
-          <label id="importLabel" for="importFile">Импорт JSON</label>
-          <input id="importFile" type="file" accept="application/json" />
-          <button id="deleteData" type="button" class="danger">Удалить данные</button>
-        </div>
+        <label>Заметка<textarea id="note" placeholder="Что хочется поддержать сегодня?"></textarea></label>
+        <button type="submit">Сохранить</button>
       </form>
     </section>
+
+    <nav class="tabbar glass">
+      <button class="tab-btn active" data-tab="calendar">Календарь</button>
+      <button class="tab-btn" data-tab="insights">Инсайты</button>
+      <button class="tab-btn" data-tab="care">Забота</button>
+      <button class="tab-btn" data-tab="settings">Профиль</button>
+    </nav>
 
     <script src="./i18n/ru.js"></script>
     <script src="./js/app.js"></script>

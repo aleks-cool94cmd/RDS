@@ -397,39 +397,64 @@ button:active { transform: translateY(0) scale(.96); filter: brightness(.97); }
   place-items: center;
   box-shadow: 0 8px 20px rgba(181,120,220,0.12);
   position: relative;
+  overflow: hidden;
 }
 .ring::before {
   content: '';
-  width: 56px;
-  height: 56px;
-  border-radius: 999px;
-  background: conic-gradient(#6f63ff var(--ring-progress, 25%), #efdaf5 0);
   position: absolute;
+  inset: 8px;
+  border-radius: 999px;
+  background: conic-gradient(from -90deg, #6f63ff var(--ring-progress, 25%), #e9d7f6 0);
 }
 .ring::after {
   content: '';
-  width: 40px;
-  height: 40px;
+  position: absolute;
+  inset: 18px;
   border-radius: 999px;
   background: #f8ecfb;
-  position: absolute;
 }
-.ring strong, .ring small { position: relative; z-index: 2; color: #28334a; line-height: 1; }
-.ring strong { font-size: 12px; margin-top: -2px; }
-.ring small { font-size: 9px; opacity: .85; }
+.ring strong, .ring small {
+  position: relative;
+  z-index: 2;
+  color: #28334a;
+  line-height: 1;
+  text-align: center;
+}
+.ring strong { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.ring small { font-size: 10px; opacity: .9; font-weight: 600; }
 
 .calendar-card {
   background: #ffffff;
   border-radius: 18px;
   padding: 14px;
   box-shadow: 0 8px 20px rgba(15,23,42,0.04);
+  overflow: hidden;
 }
-.calendar-controls { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-#monthLabel { font-weight: 700; color: #0f1724; font-size: 18px; text-transform: capitalize; }
+.calendar-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+#monthLabel {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 700;
+  color: #0f1724;
+  font-size: 18px;
+  text-transform: capitalize;
+}
 #prevMonth, #nextMonth {
+  flex: 0 0 44px;
   width: 44px;
   height: 44px;
   min-height: 44px;
+  padding: 0;
   border-radius: 12px;
   background: linear-gradient(135deg,#f39bd0,#bb93ff);
   color: #fff;
@@ -448,11 +473,15 @@ button:active { transform: translateY(0) scale(.96); filter: brightness(.97); }
 }
 .calendar-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 8px;
+  overflow: hidden;
 }
 .day-cell {
+  width: 100%;
   height: 44px;
+  min-height: 44px;
+  padding: 0;
   border-radius: 10px;
   border: none;
   display: flex;
@@ -552,6 +581,7 @@ button:active { transform: translateY(0) scale(.96); filter: brightness(.97); }
 :root.dark .day-cell.is-selected { border: 2px solid rgba(147,197,253,.55); }
 :root.dark .nav-item.active { color: #fff; }
 :root.dark .ring::after { background: #1a2238; }
+:root.dark .ring::before { background: conic-gradient(from -90deg, #8f7bff var(--ring-progress, 25%), rgba(255,255,255,.2) 0); }
 :root.dark .ring strong, :root.dark .ring small { color: #e6eef8; }
 
 @media (max-width:380px) {

@@ -14,6 +14,10 @@ body {
   color: var(--text);
   min-height: 100vh;
 }
+body[data-phase='menstrual'] { background: linear-gradient(180deg, #ffe2ec, #f6f2ff); }
+body[data-phase='follicular'] { background: linear-gradient(180deg, #dff1ff, #eef7ff); }
+body[data-phase='ovulation'] { background: linear-gradient(180deg, #fff1cf, #fff8ea); }
+body[data-phase='luteal'] { background: linear-gradient(180deg, #ffe6d7, #fff5ee); }
 h1, h2, h3, strong { font-family: 'Manrope', 'Inter', sans-serif; }
 button, input, select, textarea { font: inherit; }
 button { border: 0; border-radius: 14px; padding: 12px; min-height: 44px; }
@@ -40,8 +44,14 @@ button { border: 0; border-radius: 14px; padding: 12px; min-height: 44px; }
 
 .calendar-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
 .calendar-controls button { min-width: 44px; }
-.calendar-grid { margin-top: 8px; display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-.day-cell { border: 0; border-radius: 12px; min-height: 44px; font-weight: 600; background: #fff; box-shadow: 0 3px 8px #00000010; }
+.weekdays { margin-top: 10px; display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; color: var(--muted); font-size: .76rem; text-align: center; }
+.calendar-grid { margin-top: 6px; display: grid; grid-template-columns: repeat(7, 1fr); gap: 7px; padding: 10px; background: #ffffffaa; border-radius: 16px; border: 1px solid #e5ebf7; }
+.day-cell { border: 0; border-radius: 12px; min-height: 44px; font-weight: 700; background: #fff; box-shadow: 0 3px 8px #00000010; transition: transform .18s ease, box-shadow .2s ease; }
+.day-cell:active { transform: scale(.96); }
+.day-cell.phase-menstrual { background: #ffe2ed; }
+.day-cell.phase-follicular { background: #e8f5ff; }
+.day-cell.phase-ovulation { background: #fff3d4; }
+.day-cell.phase-luteal { background: #ffe9db; }
 .day-cell.is-selected { outline: 2px solid #5f72ff; }
 .day-cell.is-today { border: 2px dashed var(--accent); }
 .day-cell.is-outside { opacity: .32; }
@@ -80,8 +90,8 @@ button { border: 0; border-radius: 14px; padding: 12px; min-height: 44px; }
 #questionBody input, #questionBody select { width: 100%; border: 1px solid #dbe2f0; border-radius: 12px; padding: 12px; margin-top: 8px; }
 
 .date-field { position: relative; display: block; }
+.date-picker-btn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); min-height: 36px; min-width: 36px; padding: 0; border-radius: 10px; background: #edf2fb; }
 .pretty-date { padding-right: 42px !important; border: 1px solid #cfd8ea !important; background: linear-gradient(180deg, #ffffff, #f8fbff); }
-.calendar-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; }
 .date-help { color: var(--muted); font-size: .78rem; display: block; margin-top: 6px; }
 
 @keyframes hello {

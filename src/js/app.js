@@ -153,7 +153,7 @@
       const dateStr = formatDate(cur);
       const day = ensureDay(dateStr);
       const btn = document.createElement('button');
-      btn.className = 'day-cell';
+      btn.className = `day-cell phase-${day.phase}`;
       btn.textContent = String(cur.getDate());
       if (dateStr === state.selectedDate) btn.classList.add('is-selected');
       if (dateStr === todayStr()) btn.classList.add('is-today');
@@ -264,20 +264,6 @@
     URL.revokeObjectURL(a.href);
   }
 
-  function importJson(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const r = new FileReader();
-    r.onload = () => {
-      const parsed = JSON.parse(String(r.result));
-      if (parsed.cycles && parsed.days && parsed.settings) {
-        state.data = parsed;
-        renderMain();
-      }
-    };
-    r.readAsText(file);
-  }
-
   async function enableNotifications() {
     if (!('Notification' in window)) return;
     const permission = await Notification.requestPermission();
@@ -295,7 +281,7 @@
     return `
       <label class="date-field">
         <input id="onboardingInput" type="date" class="pretty-date" />
-        <span class="calendar-icon" aria-hidden="true">📅</span>
+        <button id="openDatePicker" type="button" class="date-picker-btn" aria-label="Открыть календарь">📅</button>
       </label>
       <small class="date-help">Формат: ДД.ММ.ГГГГ</small>
     `;
@@ -305,7 +291,7 @@
     const list = t.onboarding.questions;
     const q = list[state.onboardingStep];
     const body = document.getElementById('questionBody');
-    document.getElementById('questionTitle').textContent = `${state.onboardingStep + 1}/${list.length}. ${q.title}`;
+    document.getElementById('questionTitle').textContent = q.title;
 
     if (q.type === 'select') {
       body.innerHTML = `<select id="onboardingInput">${q.options.map((x) => `<option value="${x}">${x}</option>`).join('')}</select>`;
@@ -317,6 +303,14 @@
 
     const current = state.onboardingAnswers[q.key];
     if (current) document.getElementById('onboardingInput').value = current;
+    if (q.type === 'date') {
+      const trigger = document.getElementById('openDatePicker');
+      const input = document.getElementById('onboardingInput');
+      trigger.addEventListener('click', () => {
+        if (typeof input.showPicker === 'function') input.showPicker();
+        else input.focus();
+      });
+    }
     document.getElementById('prevQuestion').style.visibility = state.onboardingStep === 0 ? 'hidden' : 'visible';
     document.getElementById('nextQuestion').textContent = state.onboardingStep === list.length - 1 ? 'Завершить' : 'Далее';
   }
@@ -394,7 +388,6 @@
     document.getElementById('markStart').addEventListener('click', markStart);
     document.getElementById('remindLater').addEventListener('click', () => { state.data.remindLaterUntil = shiftBy(todayStr(), 2); renderMain(); });
     document.getElementById('exportData').addEventListener('click', exportJson);
-    document.getElementById('importFile').addEventListener('change', importJson);
     document.getElementById('enableNotifications').addEventListener('click', enableNotifications);
     document.getElementById('deleteData').addEventListener('click', () => {
       localStorage.removeItem(STORAGE_KEY);

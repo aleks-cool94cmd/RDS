@@ -42,6 +42,7 @@
           <strong id="monthLabel"></strong>
           <button id="nextMonth" aria-label="Следующий месяц">→</button>
         </section>
+        <div class="weekdays"><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span></div>
         <section id="calendarGrid" class="calendar-grid" aria-label="Календарь"></section>
         <section id="phaseCard" class="card"></section>
         <section id="delayPanel" class="card danger" hidden>
@@ -65,7 +66,7 @@
       <section id="tab-care" class="tab-content">
         <section class="card">
           <h3>Дневник самочувствия</h3>
-          <div class="actions col"><button id="openSheet">Заполнить за сегодня</button><label id="importLabel" for="importFile" class="ghost">Импорт JSON</label><input id="importFile" type="file" accept="application/json" /></div>
+          <div class="actions col"><button id="openSheet">Заполнить за сегодня</button></div>
           <ul id="cyclesHistory"></ul>
         </section>
       </section>

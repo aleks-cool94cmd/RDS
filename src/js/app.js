@@ -346,6 +346,7 @@
     const list = t.onboarding.questions;
     const q = list[state.onboardingStep];
     const body = document.getElementById('questionBody');
+    document.getElementById('questionStep').textContent = `${state.onboardingStep + 1}/${list.length}.`;
     document.getElementById('questionTitle').textContent = q.title;
 
     if (q.type === 'select') {

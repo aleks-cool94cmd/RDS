@@ -64,7 +64,7 @@
   }
 
   function applyTheme(isDark) {
-    const toggle = document.getElementById('colorToggle');
+    const toggle = document.getElementById('themeToggleSettings');
     document.documentElement.classList.toggle('dark', isDark);
     if (toggle) {
       toggle.textContent = isDark ? '☀️ Светлый режим' : '🌙 Тёмный режим';
@@ -519,7 +519,7 @@
     });
 
     document.getElementById('nextQuestion').addEventListener('click', nextQuestion);
-    const themeToggle = document.getElementById('colorToggle');
+    const themeToggle = document.getElementById('themeToggleSettings');
     if (themeToggle) themeToggle.addEventListener('click', () => applyTheme(!document.documentElement.classList.contains('dark')));
   }
 

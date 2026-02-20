@@ -420,8 +420,14 @@ button:active { transform: translateY(0) scale(.96); filter: brightness(.97); }
   line-height: 1;
   text-align: center;
 }
-.ring strong { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-.ring small { font-size: 10px; opacity: .9; font-weight: 600; }
+.ring strong { font-size: 36px; font-weight: 700; margin-bottom: 4px; font-family: 'Manrope', 'Inter', sans-serif; }
+.ring small { font-size: 9px; opacity: .9; font-weight: 700; text-transform: uppercase; letter-spacing: .2px; max-width: 52px; }
+.ring-pulse { animation: ringPulse .5s ease; }
+@keyframes ringPulse {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.045); }
+  100% { transform: scale(1); }
+}
 
 .calendar-card {
   background: #ffffff;
@@ -583,7 +589,10 @@ button:active { transform: translateY(0) scale(.96); filter: brightness(.97); }
 :root.dark .ring::after { background: #1a2238; }
 :root.dark .ring::before { background: conic-gradient(from -90deg, #8f7bff var(--ring-progress, 25%), rgba(255,255,255,.2) 0); }
 :root.dark .ring strong, :root.dark .ring small { color: #e6eef8; }
+:root.dark .ring small { color: #d0daf3; }
 
 @media (max-width:380px) {
   .day-cell { height: 40px; }
+  .ring strong { font-size: 30px; }
+  .ring small { font-size: 8px; }
 }

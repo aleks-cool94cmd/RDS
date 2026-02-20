@@ -88,6 +88,35 @@
 
   let progressAnimationFrame = null;
   let progressCurrentValue = 0;
+  let ringAnimationFrame = null;
+  let ringProgressCurrentValue = 0;
+
+  function animateRingProgress(targetPercent) {
+    const ring = document.getElementById('cycleRing');
+    if (!ring) return;
+    const target = Math.max(0, Math.min(100, Number(targetPercent) || 0));
+    if (ringAnimationFrame) cancelAnimationFrame(ringAnimationFrame);
+    const startValue = ringProgressCurrentValue;
+    const start = performance.now();
+    const duration = 640;
+
+    const ease = (t) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t);
+
+    const tick = (now) => {
+      const t = Math.min(1, (now - start) / duration);
+      const next = startValue + (target - startValue) * ease(t);
+      ring.style.setProperty('--ring-progress', `${next.toFixed(2)}%`);
+      if (t < 1) {
+        ringAnimationFrame = requestAnimationFrame(tick);
+      } else {
+        ringProgressCurrentValue = target;
+        ringAnimationFrame = null;
+      }
+    };
+
+    ringAnimationFrame = requestAnimationFrame(tick);
+  }
+
 
   function animateProgressNumber(target, element) {
     if (progressAnimationFrame) cancelAnimationFrame(progressAnimationFrame);
@@ -202,8 +231,14 @@
     }
     document.getElementById('prediction').textContent = `Следующая менструация: ${prediction.predictedNextPeriod}`;
     document.getElementById('ringMain').textContent = prediction.cycleDay;
-    document.getElementById('ringSub').textContent = `из ${prediction.cycleLength}`;
-    document.getElementById('cycleRing').style.setProperty('--ring-progress', `${Math.round((prediction.cycleDay / prediction.cycleLength) * 100)}%`);
+    document.getElementById('ringSub').textContent = 'день цикла';
+    const ring = document.getElementById('cycleRing');
+    const ringPercent = Math.round((prediction.cycleDay / prediction.cycleLength) * 100);
+    ring.classList.remove('ring-pulse');
+    void ring.offsetWidth;
+    ring.classList.add('ring-pulse');
+    setTimeout(() => ring.classList.remove('ring-pulse'), 520);
+    animateRingProgress(ringPercent);
     document.getElementById('periodCountdown').textContent = `${daysDiff(todayStr(), prediction.predictedNextPeriod)} дн`;
     document.getElementById('ovulationCountdown').textContent = `${daysDiff(todayStr(), prediction.ovulationDate)} дн`;
     document.getElementById('selectedDateLabel').textContent = state.selectedDate;

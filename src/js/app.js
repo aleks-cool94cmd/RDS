@@ -476,15 +476,16 @@
     document.getElementById('nextQuestion').addEventListener('click', nextQuestion);
   }
 
-  bindEvents();
-  renderTabs();
   if (!state.data.profile.onboardingCompleted) {
     setAppVisibility(false);
     document.getElementById('onboarding').hidden = false;
-    renderQuestion();
   } else {
     setAppVisibility(true);
   }
+
+  bindEvents();
+  renderTabs();
+  if (!state.data.profile.onboardingCompleted) renderQuestion();
   renderMain();
 
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js');

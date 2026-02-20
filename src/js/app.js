@@ -86,6 +86,29 @@
     setTimeout(() => heart.classList.remove('pulse'), 300);
   }
 
+  let progressAnimationFrame = null;
+  let progressCurrentValue = 0;
+
+  function animateProgressNumber(target, element) {
+    if (progressAnimationFrame) cancelAnimationFrame(progressAnimationFrame);
+    const start = progressCurrentValue;
+    const duration = 520;
+    const startedAt = performance.now();
+
+    const ease = (t) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t);
+
+    const tick = (now) => {
+      const p = Math.min((now - startedAt) / duration, 1);
+      const value = Math.round(start + (target - start) * ease(p));
+      element.textContent = `${value}%`;
+      progressCurrentValue = value;
+      if (p < 1) progressAnimationFrame = requestAnimationFrame(tick);
+      else progressAnimationFrame = null;
+    };
+
+    progressAnimationFrame = requestAnimationFrame(tick);
+  }
+
   function setOnboardingProgress() {
     const circle = document.getElementById('progressCircle');
     const percent = document.getElementById('progressPercent');
@@ -101,7 +124,7 @@
 
     circle.style.strokeDasharray = circumference.toFixed(2);
     circle.style.strokeDashoffset = (circumference * (1 - ratio)).toFixed(2);
-    percent.textContent = `${pct}%`;
+    animateProgressNumber(pct, percent);
     if (card) requestAnimationFrame(() => card.classList.add('show'));
   }
 

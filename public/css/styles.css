@@ -452,8 +452,8 @@ button:active { transform: translateY(0) scale(.96); filter: brightness(.97); }
   font-size: 26px;
   font-weight: 800;
   font-family: 'Manrope', 'Inter', sans-serif;
-  color: #f4f7ff;
-  text-shadow: 0 6px 18px rgba(0,0,0,.45);
+  color: #233255;
+  text-shadow: 0 2px 10px rgba(255,255,255,.35), 0 4px 10px rgba(17,26,48,.28);
 }
 .ring .ring-label {
   bottom: 9px;
@@ -461,7 +461,7 @@ button:active { transform: translateY(0) scale(.96); filter: brightness(.97); }
   font-size: 8px;
   opacity: .92;
   font-weight: 700;
-  color: #e8efff;
+  color: #31446f;
   text-transform: uppercase;
   line-height: 1.08;
   letter-spacing: .25px;
@@ -641,8 +641,8 @@ button:active { transform: translateY(0) scale(.96); filter: brightness(.97); }
 :root.dark .ring { background: linear-gradient(135deg,#9d78d8,#7e63d3); }
 :root.dark .ring-center { background: radial-gradient(circle at 30% 28%, rgba(255,255,255,0.04), rgba(255,255,255,0.01)); box-shadow: inset 0 1px 6px rgba(255,255,255,.08), 0 8px 18px rgba(0,0,0,.45); }
 :root.dark .ring::before { background: conic-gradient(from -90deg, var(--ring-accent, #8f7bff) var(--ring-progress, 25%), rgba(255,255,255,.16) 0); }
-:root.dark .ring strong, :root.dark .ring small { color: #eef3ff; }
-:root.dark .ring .ring-label { color: #d9e2fb; }
+:root.dark .ring strong, :root.dark .ring small { color: #1f2f53; }
+:root.dark .ring .ring-label { color: #2d3f67; }
 
 @media (max-width:380px) {
   .day-cell { height: 40px; }

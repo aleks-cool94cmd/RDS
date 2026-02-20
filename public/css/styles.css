@@ -289,3 +289,44 @@ button:active { transform: translateY(0) scale(.98); }
   70%{transform:scale(1.08);opacity:0.96}
   100%{transform:scale(1);opacity:1}
 }
+
+
+/* readable form controls in dark mode */
+#questionBody select,
+#questionBody input,
+.sheet-form input,
+.sheet-form select,
+.sheet-form textarea {
+  color: var(--text);
+  -webkit-text-fill-color: var(--text);
+}
+
+#questionBody select option,
+.sheet-form select option {
+  color: #111827;
+  background: #ffffff;
+}
+
+:root.dark #questionBody select,
+:root.dark #questionBody input,
+:root.dark .sheet-form input,
+:root.dark .sheet-form select,
+:root.dark .sheet-form textarea {
+  color: #e6eef8;
+  -webkit-text-fill-color: #e6eef8;
+  border-color: rgba(255,255,255,.16);
+  background: rgba(255,255,255,.08);
+}
+
+:root.dark #questionBody select option,
+:root.dark .sheet-form select option {
+  color: #e6eef8;
+  background: #162338;
+}
+
+:root.dark #questionTitle,
+:root.dark .step,
+:root.dark .onboarding-card h1,
+:root.dark #onboardingHint {
+  color: #e6eef8;
+}

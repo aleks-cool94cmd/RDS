@@ -458,26 +458,26 @@ button:active { transform: translateY(0) scale(.96); filter: brightness(.97); }
   text-align: center;
 }
 .ring strong {
-  top: 34%;
-  transform: translateX(-50%);
+  top: 48%;
+  transform: translate(-50%, -58%);
   width: 64px;
   line-height: 1;
-  font-size: 54px;
+  font-size: 52px;
   font-weight: 800;
   font-family: 'Manrope', 'Inter', sans-serif;
   color: #ffffff;
   text-shadow: 0 10px 24px rgba(0,0,0,.5);
 }
 .ring .ring-label {
-  top: 74%;
-  width: 80px;
-  font-size: 10px;
-  opacity: .92;
-  font-weight: 600;
-  color: rgba(235,241,255,.95);
+  top: 70%;
+  width: 72px;
+  font-size: 9px;
+  opacity: .95;
+  font-weight: 700;
+  color: rgba(240,245,255,.96);
   text-transform: lowercase;
   line-height: 1.08;
-  letter-spacing: .25px;
+  letter-spacing: .2px;
 }
 .ring-pulse { animation: ringPulse .55s ease; }
 @keyframes ringPulse {
@@ -650,6 +650,6 @@ button:active { transform: translateY(0) scale(.96); filter: brightness(.97); }
 @media (max-width:380px) {
   .day-cell { height: 40px; }
   .ring { --ring-size: 92px; }
-  .ring strong { width: 54px; font-size: 42px; }
-  .ring .ring-label { width: 72px; font-size: 10px; top: 68%; }
+  .ring strong { width: 52px; font-size: 40px; }
+  .ring .ring-label { width: 66px; font-size: 8px; top: 70%; }
 }

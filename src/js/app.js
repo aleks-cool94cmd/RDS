@@ -90,6 +90,32 @@
   let progressCurrentValue = 0;
   let ringAnimationFrame = null;
   let ringProgressCurrentValue = 0;
+  let ringNumberAnimationFrame = null;
+  let ringNumberCurrentValue = 0;
+
+  function animateRingNumber(targetValue) {
+    const el = document.getElementById('ringMain');
+    if (!el) return;
+    const target = Math.max(0, Number(targetValue) || 0);
+    if (ringNumberAnimationFrame) cancelAnimationFrame(ringNumberAnimationFrame);
+    const from = ringNumberCurrentValue || Number(el.textContent) || target;
+    const start = performance.now();
+    const duration = 520;
+    const ease = (t) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t);
+
+    const tick = (now) => {
+      const t = Math.min(1, (now - start) / duration);
+      const next = Math.round(from + (target - from) * ease(t));
+      el.textContent = String(next);
+      if (t < 1) ringNumberAnimationFrame = requestAnimationFrame(tick);
+      else {
+        ringNumberCurrentValue = target;
+        ringNumberAnimationFrame = null;
+      }
+    };
+
+    ringNumberAnimationFrame = requestAnimationFrame(tick);
+  }
 
   function animateRingProgress(targetPercent) {
     const ring = document.getElementById('cycleRing');
@@ -233,7 +259,7 @@
       return;
     }
     document.getElementById('prediction').textContent = `Следующая менструация: ${prediction.predictedNextPeriod}`;
-    document.getElementById('ringMain').textContent = prediction.cycleDay;
+    animateRingNumber(prediction.cycleDay);
     document.getElementById('ringSub').textContent = 'день цикла';
     const ring = document.getElementById('cycleRing');
     const ringPercent = Math.round((prediction.cycleDay / prediction.cycleLength) * 100);

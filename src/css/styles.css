@@ -416,29 +416,29 @@ button:active { transform: translateY(0) scale(.96); filter: brightness(.97); }
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background:
-    conic-gradient(from -90deg,
-      #ff86cf 0%,
-      #ffbd7f 20%,
-      #b98aff 55%,
-      #83beff 82%,
-      #ff86cf var(--ring-progress, 0%),
-      rgba(255,255,255,.2) var(--ring-progress, 0%) 100%);
+  background: conic-gradient(from -90deg, rgba(255,255,255,.14), rgba(255,255,255,.22), rgba(255,255,255,.14));
   -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 16px), #000 calc(100% - 15px));
   mask: radial-gradient(farthest-side, transparent calc(100% - 16px), #000 calc(100% - 15px));
-  filter: drop-shadow(0 0 14px rgba(216,138,255,.58));
-  z-index: 2;
+  opacity: .55;
+  z-index: 1;
 }
 .ring::after {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: conic-gradient(from -90deg, rgba(255,255,255,.46) 0deg, transparent 70deg, transparent 290deg, rgba(255,255,255,.34) 360deg);
-  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 16px), #000 calc(100% - 15px));
-  mask: radial-gradient(farthest-side, transparent calc(100% - 16px), #000 calc(100% - 15px));
-  opacity: .35;
-  z-index: 1;
+  background: conic-gradient(from -90deg, #ff86cf 0%, #ffbd7f 22%, #b98aff 58%, #83beff 85%, #ff86cf 100%);
+  -webkit-mask:
+    conic-gradient(#000 0 var(--ring-progress, 0%), transparent var(--ring-progress, 0%) 100%),
+    radial-gradient(farthest-side, transparent calc(100% - 16px), #000 calc(100% - 15px));
+  -webkit-mask-composite: source-in;
+  mask:
+    conic-gradient(#000 0 var(--ring-progress, 0%), transparent var(--ring-progress, 0%) 100%),
+    radial-gradient(farthest-side, transparent calc(100% - 16px), #000 calc(100% - 15px));
+  mask-composite: intersect;
+  filter: drop-shadow(0 0 14px rgba(216,138,255,.62));
+  transition: -webkit-mask .65s cubic-bezier(.2,.85,.25,1), mask .65s cubic-bezier(.2,.85,.25,1);
+  z-index: 2;
 }
 
 .ring-center {

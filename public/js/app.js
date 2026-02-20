@@ -234,6 +234,9 @@
     document.getElementById('ringSub').textContent = 'день цикла';
     const ring = document.getElementById('cycleRing');
     const ringPercent = Math.round((prediction.cycleDay / prediction.cycleLength) * 100);
+    const phaseClass = `phase-${ensureDay(state.selectedDate).phase}`;
+    ring.classList.remove('phase-menstrual', 'phase-follicular', 'phase-ovulation', 'phase-luteal');
+    ring.classList.add(phaseClass);
     ring.classList.remove('ring-pulse');
     void ring.offsetWidth;
     ring.classList.add('ring-pulse');

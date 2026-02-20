@@ -365,9 +365,18 @@ button:active { transform: translateY(0) scale(.96); filter: brightness(.97); }
 :root.dark .tab-btn.active { color: #fff; background: rgba(255,255,255,.14); }
 
 /* Main screen styling update (interactive calendar + mini progress) */
-.app { max-width: 420px; margin: 18px auto; padding: 18px; min-height: 100vh; display: flex; flex-direction: column; gap: 14px; }
+.app {
+  max-width: 420px;
+  margin: 18px auto;
+  padding: 18px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
 .header-card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.85));
+  background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.9));
   border-radius: 18px;
   padding: 14px;
   display: flex;
@@ -376,52 +385,80 @@ button:active { transform: translateY(0) scale(.96); filter: brightness(.97); }
   box-shadow: 0 8px 20px rgba(15,23,42,0.06);
 }
 .header-card > div:first-child { flex: 1; }
-#appTitle { font-weight: 700; font-size: 18px; color: #0f1724; margin-bottom: 6px; }
-#appSubtitle, #prediction { color: var(--muted); font-size: 13px; }
+#appTitle { font-weight: 700; font-size: 36px; color: #0f1724; margin-bottom: 4px; }
+#appSubtitle, #prediction { color: #5d6778; font-size: 13px; }
+
 .ring {
   width: 78px;
   height: 78px;
   border-radius: 14px;
-  background: linear-gradient(135deg,var(--accent-pink,#ff93c7),var(--accent-violet,#b692ff));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+  background: linear-gradient(135deg,#f39bd0,#bb93ff);
+  display: grid;
+  place-items: center;
   box-shadow: 0 8px 20px rgba(181,120,220,0.12);
+  position: relative;
+}
+.ring::before {
+  content: '';
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  background: conic-gradient(#6f63ff var(--ring-progress, 25%), #efdaf5 0);
+  position: absolute;
 }
 .ring::after {
   content: '';
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: #f8ecfb;
   position: absolute;
-  inset: 6px;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.16);
 }
-.ring strong, .ring small { position: relative; z-index: 1; color: #081226; }
+.ring strong, .ring small { position: relative; z-index: 2; color: #28334a; line-height: 1; }
+.ring strong { font-size: 12px; margin-top: -2px; }
+.ring small { font-size: 9px; opacity: .85; }
 
 .calendar-card {
-  background: var(--card);
+  background: #ffffff;
   border-radius: 18px;
   padding: 14px;
   box-shadow: 0 8px 20px rgba(15,23,42,0.04);
 }
-.calendar-controls { margin-bottom: 8px; }
-#monthLabel, .month-title { font-weight: 700; color: #0f1724; }
+.calendar-controls { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+#monthLabel { font-weight: 700; color: #0f1724; font-size: 34px; }
 #prevMonth, #nextMonth {
   width: 44px;
   height: 44px;
   min-height: 44px;
   border-radius: 12px;
-  background: linear-gradient(135deg,var(--accent-pink,#ff93c7),var(--accent-violet,#b692ff));
+  background: linear-gradient(135deg,#f39bd0,#bb93ff);
   color: #fff;
   box-shadow: 0 8px 20px rgba(167,139,250,0.12);
 }
 #prevMonth:active, #nextMonth:active { transform: translateY(2px) scale(.995); }
 
-.weekdays { margin-bottom: 8px; color: var(--muted); font-size: 12px; }
-.calendar-grid { gap: 8px; }
+.weekdays {
+  margin-bottom: 8px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  color: #6b7280;
+  font-size: 12px;
+  text-align: center;
+}
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
 .day-cell {
   height: 44px;
   border-radius: 10px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
   transition: transform .12s ease, box-shadow .12s ease;
 }
 .day-cell:active { transform: translateY(2px) scale(.995); }
@@ -429,7 +466,12 @@ button:active { transform: translateY(0) scale(.96); filter: brightness(.97); }
 .day-cell.phase-ovulation { background: linear-gradient(180deg,#fff7ea,#fff0d1); color:#6a3b00; }
 .day-cell.phase-luteal { background: linear-gradient(180deg,#fff1ef,#ffe9e6); color:#6b2b2b; }
 .day-cell.phase-follicular { background: linear-gradient(180deg,#e9f8ff,#d9f0ff); color:#0b4b66; }
-.day-cell.is-selected { background: linear-gradient(180deg,#eaf6ff,#d6f0ff); box-shadow: 0 8px 18px rgba(15,76,129,0.06); border: 2px solid rgba(59,130,246,0.12); }
+.day-cell.is-selected {
+  background: linear-gradient(180deg,#eaf6ff,#d6f0ff);
+  box-shadow: 0 8px 18px rgba(15,76,129,0.06);
+  border: 2px solid rgba(59,130,246,0.2);
+}
+.day-cell.is-outside { opacity: .38; }
 
 .info-card {
   background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.9));
@@ -437,15 +479,16 @@ button:active { transform: translateY(0) scale(.96); filter: brightness(.97); }
   padding: 12px;
   box-shadow: 0 8px 20px rgba(12,18,35,0.04);
 }
+.info-card h3 { font-size: 31px; margin-bottom: 4px; }
+.info-card p { color: #556177; }
 
 .bottom-nav {
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
-  bottom: 18px;
-  width: 92%;
-  max-width: 420px;
-  background: linear-gradient(180deg,rgba(255,255,255,0.95),rgba(255,255,255,0.9));
+  bottom: 12px;
+  width: min(92%, 420px);
+  background: linear-gradient(180deg,rgba(255,255,255,0.97),rgba(255,255,255,0.92));
   border-radius: 28px;
   padding: 8px;
   display: flex;
@@ -459,20 +502,16 @@ button:active { transform: translateY(0) scale(.96); filter: brightness(.97); }
   text-align: center;
   padding: 8px 6px;
   border-radius: 999px;
-  color: var(--muted);
-  font-weight: 600;
-  letter-spacing: .2px;
+  color: #6b7280;
+  font-weight: 700;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
   font-size: 12px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   background: transparent;
   box-shadow: none;
-  border: none;
   transition: transform .18s ease, background .2s ease, color .2s ease;
 }
 .nav-item.active {
-  background: linear-gradient(90deg,var(--accent-pink,#ff93c7),var(--accent-violet,#b692ff));
+  background: linear-gradient(90deg,#f39bd0,#a989ff);
   color: white;
   box-shadow: 0 8px 18px rgba(167,139,250,0.12);
 }
@@ -482,18 +521,39 @@ button:active { transform: translateY(0) scale(.96); filter: brightness(.97); }
 .tab-content.active { display: block; animation: tabSwitch .28s ease forwards; }
 @keyframes tabSwitch { from { opacity: 0; transform: translateY(6px);} to { opacity: 1; transform: translateY(0);} }
 
+/* dark theme adaptation */
+:root.dark body {
+  background: linear-gradient(135deg, #0b1626, #112338, #1a2d43);
+}
 :root.dark .header-card,
 :root.dark .calendar-card,
 :root.dark .info-card,
 :root.dark .bottom-nav {
-  background: linear-gradient(180deg, rgba(8,12,18,.72), rgba(8,12,18,.66));
+  background: linear-gradient(180deg, rgba(10,16,28,0.92), rgba(12,18,30,0.86));
   border: 1px solid rgba(255,255,255,.08);
+  box-shadow: 0 12px 28px rgba(0,0,0,.28);
 }
 :root.dark #appTitle,
 :root.dark #monthLabel,
-:root.dark .info-title,
-:root.dark .info-card,
+:root.dark .info-card h3,
 :root.dark .day-cell,
-:root.dark .nav-item { color: #e6eef8; }
-:root.dark .day-cell.is-selected { border-color: rgba(147,197,253,.45); }
+:root.dark .nav-item {
+  color: #e6eef8;
+}
+:root.dark #appSubtitle,
+:root.dark #prediction,
+:root.dark .weekdays,
+:root.dark .info-card p,
+:root.dark .muted { color: #9fb0c5; }
+:root.dark .day-cell.phase-menstrual { background: linear-gradient(180deg, rgba(255, 122, 182, .25), rgba(255, 122, 182, .14)); }
+:root.dark .day-cell.phase-follicular { background: linear-gradient(180deg, rgba(120, 190, 255, .25), rgba(120, 190, 255, .14)); }
+:root.dark .day-cell.phase-ovulation { background: linear-gradient(180deg, rgba(255, 208, 120, .25), rgba(255, 208, 120, .14)); }
+:root.dark .day-cell.phase-luteal { background: linear-gradient(180deg, rgba(255, 165, 130, .25), rgba(255, 165, 130, .14)); }
+:root.dark .day-cell.is-selected { border: 2px solid rgba(147,197,253,.55); }
 :root.dark .nav-item.active { color: #fff; }
+:root.dark .ring::after { background: #1a2238; }
+:root.dark .ring strong, :root.dark .ring small { color: #e6eef8; }
+
+@media (max-width:380px) {
+  .day-cell { height: 40px; }
+}

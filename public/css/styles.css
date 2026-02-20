@@ -385,7 +385,7 @@ button:active { transform: translateY(0) scale(.96); filter: brightness(.97); }
   box-shadow: 0 8px 20px rgba(15,23,42,0.06);
 }
 .header-card > div:first-child { flex: 1; }
-#appTitle { font-weight: 700; font-size: 36px; color: #0f1724; margin-bottom: 4px; }
+#appTitle { font-weight: 700; font-size: 18px; color: #0f1724; margin-bottom: 6px; }
 #appSubtitle, #prediction { color: #5d6778; font-size: 13px; }
 
 .ring {
@@ -425,7 +425,7 @@ button:active { transform: translateY(0) scale(.96); filter: brightness(.97); }
   box-shadow: 0 8px 20px rgba(15,23,42,0.04);
 }
 .calendar-controls { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-#monthLabel { font-weight: 700; color: #0f1724; font-size: 34px; }
+#monthLabel { font-weight: 700; color: #0f1724; font-size: 18px; text-transform: capitalize; }
 #prevMonth, #nextMonth {
   width: 44px;
   height: 44px;
@@ -479,7 +479,7 @@ button:active { transform: translateY(0) scale(.96); filter: brightness(.97); }
   padding: 12px;
   box-shadow: 0 8px 20px rgba(12,18,35,0.04);
 }
-.info-card h3 { font-size: 31px; margin-bottom: 4px; }
+.info-card h3 { font-size: 18px; margin-bottom: 6px; }
 .info-card p { color: #556177; }
 
 .bottom-nav {

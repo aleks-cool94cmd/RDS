@@ -271,7 +271,7 @@
   }
 
   function renderTabs() {
-    document.querySelectorAll('.tab-btn').forEach((btn) => {
+    document.querySelectorAll('.nav-item').forEach((btn) => {
       btn.classList.toggle('active', btn.dataset.tab === state.tab);
     });
     document.querySelectorAll('.tab-content').forEach((panel) => {
@@ -495,7 +495,7 @@
   }
 
   function bindEvents() {
-    document.querySelectorAll('.tab-btn').forEach((btn) => {
+    document.querySelectorAll('.nav-item').forEach((btn) => {
       btn.addEventListener('click', () => {
         state.tab = btn.dataset.tab;
         renderTabs();

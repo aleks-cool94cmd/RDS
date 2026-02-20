@@ -51,7 +51,7 @@
     </section>
 
     <main class="app" id="appRoot" hidden>
-      <header class="apple-header glass">
+      <header class="header-card">
         <div>
           <h2 id="appTitle"></h2>
           <p id="appSubtitle"></p>
@@ -61,6 +61,7 @@
       </header>
 
       <section id="tab-calendar" class="tab-content active">
+        <section class="calendar-card">
         <section class="calendar-controls">
           <button id="prevMonth" aria-label="Предыдущий месяц">←</button>
           <strong id="monthLabel"></strong>
@@ -68,8 +69,9 @@
         </section>
         <div class="weekdays"><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span></div>
         <section id="calendarGrid" class="calendar-grid" aria-label="Календарь"></section>
-        <section id="phaseCard" class="card"></section>
-        <section id="delayPanel" class="card danger" hidden>
+        </section>
+        <section id="phaseCard" class="info-card"></section>
+        <section id="delayPanel" class="info-card danger" hidden>
           <h3></h3><p class="delay-text"></p><p class="delay-reasons"></p>
           <div class="actions col"><button id="markStart">Отметить начало</button><button id="remindLater" class="ghost">Напомнить позже</button><button id="exportData" class="ghost">Экспортировать данные</button></div>
         </section>
@@ -121,11 +123,11 @@
       </form>
     </section>
 
-    <nav class="tabbar glass" id="mainTabbar" hidden>
-      <button class="tab-btn active" data-tab="calendar">Календарь</button>
-      <button class="tab-btn" data-tab="insights">Инсайты</button>
-      <button class="tab-btn" data-tab="care">Забота</button>
-      <button class="tab-btn" data-tab="settings">Профиль</button>
+    <nav class="bottom-nav" id="mainTabbar" hidden>
+      <button class="nav-item active" data-tab="calendar">Календарь</button>
+      <button class="nav-item" data-tab="insights">Инсайты</button>
+      <button class="nav-item" data-tab="care">Забота</button>
+      <button class="nav-item" data-tab="settings">Профиль</button>
     </nav>
 
     <script src="./i18n/ru.js"></script>

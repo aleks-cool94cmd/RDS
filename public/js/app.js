@@ -279,12 +279,67 @@
 
   function dateInputTemplate() {
     return `
-      <label class="date-field">
-        <input id="onboardingInput" type="date" class="pretty-date" />
-        <button id="openDatePicker" type="button" class="date-picker-btn" aria-label="Открыть календарь">📅</button>
-      </label>
-      <small class="date-help">Формат: ДД.ММ.ГГГГ</small>
+      <div class="date-input-wrap">
+        <label class="date-field">
+          <input id="onboardingInput" type="date" class="pretty-date" />
+          <button id="openDatePicker" type="button" class="date-picker-btn" aria-label="Открыть календарь">🗓️</button>
+        </label>
+        <small class="date-help">Формат: ДД.ММ.ГГГГ</small>
+        <div id="glassDatePicker" class="glass-date-picker" hidden>
+          <div class="gdp-head">
+            <button type="button" id="gdpPrev" class="ghost">‹</button>
+            <strong id="gdpLabel"></strong>
+            <button type="button" id="gdpNext" class="ghost">›</button>
+          </div>
+          <div class="gdp-week"><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span></div>
+          <div id="gdpGrid" class="gdp-grid"></div>
+        </div>
+      </div>
     `;
+  }
+
+  function setupGlassDatePicker() {
+    const input = document.getElementById('onboardingInput');
+    const trigger = document.getElementById('openDatePicker');
+    const picker = document.getElementById('glassDatePicker');
+    const label = document.getElementById('gdpLabel');
+    const grid = document.getElementById('gdpGrid');
+    const prev = document.getElementById('gdpPrev');
+    const next = document.getElementById('gdpNext');
+
+    const selected = input.value ? parseDate(input.value) : new Date();
+    let view = new Date(selected.getFullYear(), selected.getMonth(), 1);
+
+    const draw = () => {
+      label.textContent = view.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' });
+      grid.innerHTML = '';
+      const start = new Date(view);
+      const firstDay = (start.getDay() + 6) % 7;
+      start.setDate(1 - firstDay);
+      for (let i = 0; i < 42; i += 1) {
+        const d = new Date(start.getTime() + i * DAY);
+        const iso = formatDate(d);
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'gdp-day';
+        b.textContent = String(d.getDate());
+        if (d.getMonth() !== view.getMonth()) b.classList.add('outside');
+        if (iso === input.value) b.classList.add('selected');
+        if (iso === todayStr()) b.classList.add('today');
+        b.addEventListener('click', () => {
+          input.value = iso;
+          picker.hidden = true;
+        });
+        grid.appendChild(b);
+      }
+    };
+
+    trigger.addEventListener('click', () => {
+      picker.hidden = !picker.hidden;
+      if (!picker.hidden) draw();
+    });
+    prev.addEventListener('click', () => { view.setMonth(view.getMonth() - 1); draw(); });
+    next.addEventListener('click', () => { view.setMonth(view.getMonth() + 1); draw(); });
   }
 
   function renderQuestion() {
@@ -303,14 +358,7 @@
 
     const current = state.onboardingAnswers[q.key];
     if (current) document.getElementById('onboardingInput').value = current;
-    if (q.type === 'date') {
-      const trigger = document.getElementById('openDatePicker');
-      const input = document.getElementById('onboardingInput');
-      trigger.addEventListener('click', () => {
-        if (typeof input.showPicker === 'function') input.showPicker();
-        else input.focus();
-      });
-    }
+    if (q.type === 'date') setupGlassDatePicker();
     document.getElementById('prevQuestion').style.visibility = state.onboardingStep === 0 ? 'hidden' : 'visible';
     document.getElementById('nextQuestion').textContent = state.onboardingStep === list.length - 1 ? 'Завершить' : 'Далее';
   }

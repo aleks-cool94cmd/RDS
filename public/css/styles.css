@@ -89,10 +89,34 @@ button { border: 0; border-radius: 14px; padding: 12px; min-height: 44px; }
 .welcome-anim { font-size: 2rem; animation: hello 2.3s ease-in-out infinite; }
 #questionBody input, #questionBody select { width: 100%; border: 1px solid #dbe2f0; border-radius: 12px; padding: 12px; margin-top: 8px; }
 
+.date-input-wrap { position: relative; }
 .date-field { position: relative; display: block; }
-.date-picker-btn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); min-height: 36px; min-width: 36px; padding: 0; border-radius: 10px; background: #edf2fb; }
-.pretty-date { padding-right: 42px !important; border: 1px solid #cfd8ea !important; background: linear-gradient(180deg, #ffffff, #f8fbff); }
+.date-picker-btn {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  min-height: 36px; min-width: 36px; padding: 0; border-radius: 10px;
+  background: #edf2fbcc; border: 1px solid #d7e1f5;
+}
+.pretty-date { padding-right: 50px !important; border: 1px solid #cfd8ea !important; background: linear-gradient(180deg, #ffffff, #f8fbff); }
 .date-help { color: var(--muted); font-size: .78rem; display: block; margin-top: 6px; }
+
+.glass-date-picker {
+  margin-top: 8px;
+  background: #ffffffba;
+  border: 1px solid #dde6f8;
+  border-radius: 16px;
+  padding: 10px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 14px 32px #1f2f4e22;
+}
+.gdp-head { display: grid; grid-template-columns: 36px 1fr 36px; gap: 8px; align-items: center; }
+.gdp-head strong { text-align: center; font-size: .9rem; text-transform: capitalize; }
+.gdp-week, .gdp-grid { margin-top: 8px; display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.gdp-week { color: var(--muted); font-size: .72rem; text-align: center; }
+.gdp-day { min-height: 34px; border-radius: 10px; background: #f8fbff; border: 1px solid #e4ebfa; padding: 0; }
+.gdp-day.outside { opacity: .35; }
+.gdp-day.today { border-color: #ff7fae; }
+.gdp-day.selected { background: #4f7cff; color: #fff; border-color: #4f7cff; }
 
 @keyframes hello {
   0%,100% { transform: scale(1) translateY(0); opacity: .95; }

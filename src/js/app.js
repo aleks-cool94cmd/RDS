@@ -240,14 +240,58 @@
     return state.data.days[dateStr];
   }
 
-  function phaseCard(day) {
+  function phaseCard(day, prediction) {
     const p = t.phases[day.phase];
-    return `<div><div>${p.icon}</div><h3>${p.name}</h3><p>${p.state}</p><small>${state.selectedDate}</small></div>`;
+    return `<div><div>${p.icon}</div><h3>${p.name}</h3><p>${p.state}</p><p>${fertilityInfo(prediction)}</p><p>${reliefTipForDay(day)}</p><small>${state.selectedDate}</small></div>`;
   }
 
   function companionText(day) {
     const hard = Number(day.intensity || 0) >= 7 || ['Тревожно', 'Раздражительно', 'Грустно'].includes(day.mood);
     return hard ? `${t.labels.hardDay} ${t.labels.phaseTips[day.phase]}` : t.labels.phaseTips[day.phase];
+  }
+
+
+  function fertilityInfo(prediction) {
+    if (!prediction) return 'Добавьте данные цикла, чтобы увидеть окно высокой вероятности зачатия.';
+    return `Высокая вероятность зачатия: ${prediction.ovulationStart} — ${prediction.ovulationEnd} (пик: ${prediction.ovulationDate}).`;
+  }
+
+  function reliefTipForDay(day) {
+    const tips = t.labels.reliefTips || [];
+    if (!tips.length) return '';
+    if (day.phase === 'menstrual') return tips[Math.floor(Math.random() * tips.length)];
+    return tips[0];
+  }
+
+  async function generateAiSuggestion(mode) {
+    const key = localStorage.getItem('cycleflow_groq_key');
+    if (!key) return null;
+    const prediction = getPrediction();
+    const day = ensureDay(state.selectedDate);
+    const prompt = mode === 'comfort'
+      ? `Дай короткую поддержку (1-2 предложения) для дня цикла ${prediction ? prediction.cycleDay : '?'} в фазе ${day.phase}. Язык: русский, тон: тёплый, без медицинских диагнозов.`
+      : `Предложи один мягкий ритуал на сегодня для фазы ${day.phase} и самочувствия. Язык: русский, 1-2 предложения.`;
+
+    try {
+      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${key}`
+        },
+        body: JSON.stringify({
+          model: 'llama-3.1-8b-instant',
+          temperature: 0.8,
+          max_tokens: 120,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      return data?.choices?.[0]?.message?.content?.trim() || null;
+    } catch (_) {
+      return null;
+    }
   }
 
   function renderHeader(prediction) {
@@ -307,8 +351,10 @@
     const day = ensureDay(state.selectedDate);
     renderHeader(prediction);
     renderCalendar(prediction);
-    document.getElementById('phaseCard').innerHTML = phaseCard(day);
+    document.getElementById('phaseCard').innerHTML = phaseCard(day, prediction);
     document.getElementById('companionText').textContent = companionText(day);
+    const aiStatus = document.getElementById('aiStatus');
+    if (aiStatus) aiStatus.textContent = localStorage.getItem('cycleflow_groq_key') ? 'AI-поддержка подключена (Groq).' : 'AI-поддержка не подключена — сейчас используются локальные советы.';
 
     const history = document.getElementById('cyclesHistory');
     history.innerHTML = '';
@@ -580,14 +626,30 @@
       location.reload();
     });
 
-    document.getElementById('comfortBtn').addEventListener('click', () => {
+    document.getElementById('comfortBtn').addEventListener('click', async () => {
+      const aiText = await generateAiSuggestion('comfort');
+      if (aiText) {
+        document.getElementById('companionText').textContent = aiText;
+        return;
+      }
       const day = ensureDay(state.selectedDate);
-      day.note = `${day.note ? `${day.note}\n` : ''}${t.labels.hardDay}`;
+      const pool = t.labels.comfortIdeas || [t.labels.hardDay];
+      const fallback = pool[Math.floor(Math.random() * pool.length)];
+      day.note = `${day.note ? `${day.note}\n` : ''}${fallback}`;
+      document.getElementById('companionText').textContent = `${fallback} ${t.labels.phaseTips[day.phase]}`;
       renderMain();
     });
 
-    document.getElementById('routineBtn').addEventListener('click', () => {
-      document.getElementById('companionText').textContent = t.labels.rituals[Math.floor(Math.random() * t.labels.rituals.length)];
+    document.getElementById('routineBtn').addEventListener('click', async () => {
+      const aiText = await generateAiSuggestion('routine');
+      if (aiText) {
+        document.getElementById('companionText').textContent = aiText;
+        return;
+      }
+      const tips = t.labels.rituals || [];
+      const relief = t.labels.reliefTips || [];
+      const mixed = [...tips, ...relief];
+      document.getElementById('companionText').textContent = mixed[Math.floor(Math.random() * mixed.length)];
     });
 
     let touchX = 0;
@@ -608,6 +670,16 @@
     document.getElementById('nextQuestion').addEventListener('click', nextQuestion);
     const themeToggle = document.getElementById('themeToggleSettings');
     if (themeToggle) themeToggle.addEventListener('click', () => applyTheme(!document.documentElement.classList.contains('dark')));
+
+    const groqBtn = document.getElementById('configureGroq');
+    if (groqBtn) groqBtn.addEventListener('click', () => {
+      const current = localStorage.getItem('cycleflow_groq_key') || '';
+      const entered = window.prompt('Вставьте Groq API Key (gsk_...) для AI-поддержки. Оставьте пустым, чтобы отключить.', current);
+      if (entered === null) return;
+      if (!entered.trim()) localStorage.removeItem('cycleflow_groq_key');
+      else localStorage.setItem('cycleflow_groq_key', entered.trim());
+      renderMain();
+    });
   }
 
   initTheme();

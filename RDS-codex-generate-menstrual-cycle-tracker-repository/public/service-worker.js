@@ -1,4 +1,4 @@
-const CACHE = 'cycleflow-v17';
+const CACHE = 'cycleflow-v37';
 const OFFLINE_ASSETS = [
   './',
   './index.html',
@@ -25,7 +25,46 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  event.respondWith(caches.match(event.request).then((cached) => cached || fetch(event.request)));
+  if (event.request.method !== 'GET') return;
+
+  const requestUrl = new URL(event.request.url);
+  const isSameOrigin = requestUrl.origin === self.location.origin;
+  const isNavigation = event.request.mode === 'navigate';
+  const isCoreAsset = isSameOrigin
+    && (
+      requestUrl.pathname === '/'
+      || requestUrl.pathname.endsWith('/index.html')
+      || requestUrl.pathname.startsWith('/js/')
+      || requestUrl.pathname.startsWith('/css/')
+      || requestUrl.pathname.startsWith('/i18n/')
+    );
+
+  if (isNavigation || isCoreAsset) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          const copy = response.clone();
+          caches.open(CACHE).then((cache) => cache.put(event.request, copy));
+          return response;
+        })
+        .catch(async () => {
+          const cached = await caches.match(event.request);
+          return cached || caches.match('./index.html');
+        })
+    );
+    return;
+  }
+
+  event.respondWith(
+    caches.match(event.request).then((cached) => {
+      if (cached) return cached;
+      return fetch(event.request).then((response) => {
+        const copy = response.clone();
+        caches.open(CACHE).then((cache) => cache.put(event.request, copy));
+        return response;
+      });
+    })
+  );
 });
 
 self.addEventListener('push', (event) => {

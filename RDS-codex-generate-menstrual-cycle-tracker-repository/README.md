@@ -9,6 +9,28 @@ npm run start
 ```
 Откройте: http://localhost:4173
 
+## 1.1) Локальная база пользователей (для тестов)
+По умолчанию сервер хранит пользователей в:
+`server/data/users-db.json`
+
+Это постоянный локальный файл, он не очищается при перезапуске сервера.
+
+Полезные команды:
+```bash
+npm run db:status
+npm run db:backup
+npm run db:export-sql
+```
+
+- `db:status` — текущее состояние локальной БД
+- `db:backup` — резервная копия в `server/data/backups/`
+- `db:export-sql` — SQL-экспорт в `server/data/exports/` для переноса в PostgreSQL
+
+Шаблон окружения:
+```bash
+cp .env.example .env
+```
+
 ## 2) Как создать GitHub repo
 1. Создайте пустой репозиторий на GitHub (например `menstrual-cycle-tracker`).
 2. Скопируйте все файлы проекта в репозиторий.

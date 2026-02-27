@@ -6,8 +6,11 @@
   "scripts": {
     "build": "node -e \"const fs=require('fs');const path=require('path');const cp=(s,d)=>{fs.mkdirSync(path.dirname(d),{recursive:true});fs.copyFileSync(s,d)};cp('src/js/app.js','public/js/app.js');cp('src/js/tests.js','public/js/tests.js');cp('src/css/styles.css','public/css/styles.css');cp('src/i18n/ru.js','public/i18n/ru.js');\"",
     "test": "node src/js/tests.js",
-    "start": "npm run build && python3 -m http.server 4173 --directory public",
-    "push-server": "node server/server.js"
+    "start": "npm run build && node server/server.js",
+    "push-server": "PORT=3030 node server/server.js",
+    "db:status": "node scripts/db-tools.js status",
+    "db:backup": "node scripts/db-tools.js backup",
+    "db:export-sql": "node scripts/db-tools.js export-sql"
   },
   "dependencies": {
     "cors": "^2.8.5",

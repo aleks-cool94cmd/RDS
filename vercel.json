@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "installCommand": "cd \"RDS-codex-generate-menstrual-cycle-tracker-repository\" && npm install",
+  "buildCommand": "cd \"RDS-codex-generate-menstrual-cycle-tracker-repository\" && npm run build",
+  "outputDirectory": "RDS-codex-generate-menstrual-cycle-tracker-repository/public",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

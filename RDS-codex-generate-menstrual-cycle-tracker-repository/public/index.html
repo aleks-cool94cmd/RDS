@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f4f6fb" />
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="icon" href="./assets/icons/icon-192.svg" />
+    <link rel="stylesheet" href="./css/styles.css" />
+    <title>CycleFlow</title>
+  </head>
+  <body>
+    <section id="authGate" class="auth-gate" hidden>
+      <div class="auth-shell">
+        <div class="auth-card glass">
+          <div class="auth-card-head">
+            <button id="themeToggleAuth" type="button" class="ghost" aria-pressed="false">🌙 Тёмная тема</button>
+          </div>
+          <h1>CycleFlow</h1>
+          <p>Выберите способ входа</p>
+          <div class="actions col">
+            <button type="button" id="authRegisterBtn">Регистрация</button>
+            <button type="button" id="authLoginBtn" class="ghost">Вход</button>
+            <button type="button" id="authPartnerBtn" class="ghost">Партнерская ссылка</button>
+          </div>
+          <form id="loginEntry" class="auth-entry" hidden>
+            <input id="loginEmailInput" type="email" placeholder="Почта" autocomplete="email" />
+            <input id="loginPasswordInput" type="password" placeholder="Пароль" autocomplete="current-password" />
+            <button type="submit">Войти в аккаунт</button>
+          </form>
+          <div id="partnerEntry" class="partner-entry" hidden>
+            <input id="partnerLinkInput" type="text" placeholder="Вставьте партнерскую ссылку" />
+            <button type="button" id="openPartnerLinkBtn" class="ghost">Открыть</button>
+          </div>
+          <small id="authStatus" class="muted"></small>
+        </div>
+      </div>
+    </section>
+
+    <section id="onboarding" class="onboarding" hidden>
+      <div class="onboarding-shell">
+        <div class="onboarding-card glass" id="card">
+          <div class="header-row">
+            <div class="heart-badge" id="headerHeart" aria-hidden="true">❤</div>
+            <div>
+              <h1>Добро пожаловать в CycleFlow</h1>
+              <p id="onboardingHint">Нежно настроим приложение под вас за 1 минуту.</p>
+            </div>
+          </div>
+
+          <div class="onboarding-grid">
+            <div class="circular-wrap">
+              <svg class="progress-svg" viewBox="0 0 100 100" aria-hidden="true">
+                <defs>
+                  <linearGradient id="onboardingGrad" x1="0%" x2="100%"><stop offset="0%" stop-color="#ff7ab6"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient>
+                </defs>
+                <circle class="progress-bg" cx="50" cy="50" r="44"></circle>
+                <circle class="progress-fg" id="progressCircle" cx="50" cy="50" r="44"></circle>
+              </svg>
+              <div class="progress-center">
+                <div class="progress-percent" id="progressPercent">0%</div>
+                <div class="progress-heart">💗</div>
+              </div>
+            </div>
+
+            <form id="onboardingForm" onsubmit="event.preventDefault(); document.getElementById('nextQuestion')?.click(); return false;" novalidate>
+              <div id="questionStep" class="step"></div>
+              <h3 id="questionTitle"></h3>
+              <div id="questionBody"></div>
+              <div class="actions">
+                <button type="button" id="prevQuestion" class="ghost">Назад</button>
+                <button type="button" id="nextQuestion">Далее</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <main class="app" id="appRoot" hidden>
+      <header class="header-card">
+        <div>
+          <h2 id="appTitle"></h2>
+          <p id="appSubtitle"></p>
+          <p id="prediction" class="muted"></p>
+        </div>
+        <div class="ring" id="cycleRing" role="img" aria-label="Кольцо менструального цикла">
+          <span class="ring-halo" aria-hidden="true"></span>
+          <span class="ring-spark" aria-hidden="true"></span>
+          <span class="ring-center" aria-hidden="true"></span>
+          <strong id="ringMain">1</strong>
+          <small id="ringSub" class="ring-label">день цикла</small>
+        </div>
+      </header>
+
+      <section id="tab-calendar" class="tab-content active">
+        <section class="calendar-card">
+        <section class="calendar-controls">
+          <button id="prevMonth" aria-label="Предыдущий месяц">←</button>
+          <strong id="monthLabel"></strong>
+          <button id="nextMonth" aria-label="Следующий месяц">→</button>
+        </section>
+        <div class="weekdays"><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span></div>
+        <section id="calendarGrid" class="calendar-grid" aria-label="Календарь"></section>
+        </section>
+        <section id="phaseCard" class="info-card"></section>
+        <section id="delayPanel" class="info-card danger" hidden>
+          <h3></h3><p class="delay-text"></p><p class="delay-reasons"></p>
+          <div class="actions col"><button id="markStart">Отметить начало</button><button id="remindLater" class="ghost">Напомнить позже</button><button id="exportData" class="ghost">Экспортировать данные</button></div>
+        </section>
+      </section>
+
+      <section id="tab-insights" class="tab-content">
+        <section class="quick-grid">
+          <article class="card insight-stat stat-period">
+            <span class="stat-icon" aria-hidden="true">🩸</span>
+            <strong id="periodCountdown">—</strong>
+            <small>До менструации</small>
+            <div class="stat-indicators" aria-hidden="true"><i></i><i></i><i></i></div>
+          </article>
+          <article class="card insight-stat stat-ovulation">
+            <span class="stat-icon" aria-hidden="true">✨</span>
+            <strong id="ovulationCountdown">—</strong>
+            <small>До овуляции</small>
+            <div class="stat-indicators" aria-hidden="true"><i></i><i></i><i></i></div>
+          </article>
+          <article class="card insight-stat stat-selected">
+            <span class="stat-icon" aria-hidden="true">📅</span>
+            <strong id="selectedDateLabel">—</strong>
+            <small>Выбрано</small>
+            <div class="stat-indicators" aria-hidden="true"><i></i><i></i><i></i></div>
+          </article>
+        </section>
+        <section id="companionCard" class="card">
+          <h3>Поддержка дня</h3><p id="companionText"></p><small id="aiStatus" class="muted"></small>
+          <div class="actions"><button id="comfortBtn" class="ghost">Подбодрить меня</button><button id="routineBtn" class="ghost">Ритуал на сегодня</button></div>
+        </section>
+      </section>
+
+      <section id="tab-care" class="tab-content">
+        <section class="card care-card">
+          <h3>Дневник самочувствия</h3>
+          <p id="careHint" class="muted">Заполняйте состояние дня в 2–3 шага: это ускорит и улучшит прогнозы.</p>
+          <div class="actions col"><button id="openSheet">Заполнить за сегодня</button></div>
+        </section>
+        <section class="card care-feed-card">
+          <h4>Сохранённые дни и пометки</h4>
+          <div id="careEntries" class="care-feed-list" aria-live="polite"></div>
+        </section>
+      </section>
+
+      <section id="tab-settings" class="tab-content">
+        <section class="card">
+          <h3>Уведомления и приватность</h3>
+          <p id="emailPreview"></p>
+          <p id="profileModeHint" class="muted"></p>
+          <div class="actions col">
+            <button id="enableNotifications">Включить уведомления</button>
+            <button id="createPartnerLink" class="ghost">Создать партнёрскую ссылку</button>
+            <input id="partnerLinkOutput" type="text" readonly hidden />
+            <button id="themeToggleSettings" class="ghost" aria-pressed="false">🌙 Тёмный режим</button>
+            <button id="logoutBtn" class="ghost">Выйти из аккаунта</button>
+            <button id="exitPartnerMode" class="ghost" hidden>Выйти из режима партнёра</button>
+            <button id="deleteData" class="danger-btn">Удалить данные с устройства</button>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <section class="sheet" id="daySheet" hidden>
+      <form id="dayForm" class="sheet-form glass">
+        <div class="sheet-header"><h3>Заполнение дня</h3><button id="closeSheet" type="button" class="ghost">✕</button></div>
+        <p class="sheet-subtitle">Отметьте самочувствие, чтобы календарь точнее показывал фазу и рекомендации.</p>
+
+        <div class="sheet-row">
+          <label class="field">Начало менструации<input id="periodStart" type="date" /></label>
+          <label class="field">Конец менструации<input id="periodEnd" type="date" /></label>
+        </div>
+
+        <label class="field">
+          Интенсивность ощущений
+          <div class="range-row">
+            <input id="intensity" type="range" min="0" max="10" step="1" />
+            <output id="intensityValue" for="intensity">0</output>
+          </div>
+          <small class="field-help">0 — спокойно, 10 — очень выраженно</small>
+        </label>
+
+        <label class="field">Настроение<select id="mood"></select></label>
+
+        <div class="field">
+          <span>Симптомы</span>
+          <div id="symptomQuick" class="chip-grid" aria-label="Быстрый выбор симптомов">
+            <button type="button" class="chip" data-symptom="Боль">Боль</button>
+            <button type="button" class="chip" data-symptom="Усталость">Усталость</button>
+            <button type="button" class="chip" data-symptom="Вздутие">Вздутие</button>
+            <button type="button" class="chip" data-symptom="Чувствительность">Чувствительность</button>
+            <button type="button" class="chip" data-symptom="Головная боль">Головная боль</button>
+            <button type="button" class="chip" data-symptom="Сонливость">Сонливость</button>
+          </div>
+          <input id="symptoms" placeholder="Можно дописать через запятую" />
+        </div>
+
+        <label class="field">Заметка<textarea id="note" rows="4" placeholder="Что хочется поддержать сегодня?"></textarea></label>
+        <button type="submit" class="sheet-submit">Сохранить день</button>
+      </form>
+    </section>
+
+    <nav class="bottom-nav" id="mainTabbar" hidden>
+      <button class="nav-item active" data-tab="calendar">Календарь</button>
+      <button class="nav-item" data-tab="insights">Инсайты</button>
+      <button class="nav-item" data-tab="care">Забота</button>
+      <button class="nav-item" data-tab="settings">Профиль</button>
+    </nav>
+
+    <script src="./i18n/ru.js"></script>
+    <script src="./js/app.js"></script>
+  </body>
+</html>
